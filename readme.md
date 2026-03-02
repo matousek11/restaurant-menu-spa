@@ -1,0 +1,1 @@
+**E-Canteen Manager** is a Single Page Application (SPA) designed for management and publication of weekly dining menus. The system allows canteen managers to plan menus in advance, manage pricing, and handle dual-language content. The core of the application is a state-driven workflow that controls the visibility and lifecycle of each weekly menu.
