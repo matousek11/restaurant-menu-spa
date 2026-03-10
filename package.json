@@ -1,0 +1,24 @@
+{
+  "name": "restaurant-menu-spa",
+  "version": "1.0.0",
+  "description": "**E-Canteen Manager** is a Single Page Application (SPA) designed for management and publication of weekly dining menus. The system allows canteen managers to plan menus in advance, manage pricing, and handle dual-language content. The core of the application is a state-driven workflow that controls the visibility and lifecycle of each weekly menu.",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matousek11/restaurant-menu-spa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matousek11/restaurant-menu-spa/issues"
+  },
+  "homepage": "https://github.com/matousek11/restaurant-menu-spa#readme",
+  "devDependencies": {
+    "vitest": "^4.0.18"
+  }
+}
