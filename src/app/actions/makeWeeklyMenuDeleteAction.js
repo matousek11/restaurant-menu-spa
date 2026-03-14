@@ -1,15 +1,15 @@
-import * as constants from '../../constants.js'
+import * as constants from '../../constants.js';
 
 /**
  * Deletes selected weekly menu.
  */
-export async function makeWeeklyMenuDeleteAction({ store, api, payload }) {
+export async function makeWeeklyMenuDeleteAction({store, api, payload}) {
   store.setState((state) => ({
     ...state,
     ui: {
       ...state.ui,
       status: constants.LOADING,
-    }
+    },
   }));
 
   const result = await api.weeklyMenu.removeWeeklyMenu(payload.weekStartId);
@@ -21,8 +21,8 @@ export async function makeWeeklyMenuDeleteAction({ store, api, payload }) {
         ...state.ui,
         view: constants.ACTION_WEEKLY_MENU_LIST,
         status: constants.LOADED,
-        errorMessage: t("unableToDeleteNonExistentWeeklyMenu"),
-      }
+        errorMessage: t('unableToDeleteNonExistentWeeklyMenu'),
+      },
     }));
 
     return;
@@ -31,12 +31,12 @@ export async function makeWeeklyMenuDeleteAction({ store, api, payload }) {
   store.setState((state) => ({
     ...state,
     weeklyMenus: state.weeklyMenus.filter(
-      weeklyMenu => weeklyMenu.weekStartId !== payload.weekStartId
+      (weeklyMenu) => weeklyMenu.weekStartId !== payload.weekStartId,
     ),
     ui: {
       ...state.ui,
       view: constants.ACTION_WEEKLY_MENU_LIST,
       status: constants.LOADED,
-    }
+    },
   }));
 }

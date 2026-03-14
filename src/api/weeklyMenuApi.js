@@ -20,10 +20,7 @@
  * communication is skipped
  * @returns {WeeklyMenuApi} api endpoints for a weekly menu
  */
-export function getWeeklyMenuApi(
-  weeklyMenusStart,
-  skipDelay = false,
-) {
+export function getWeeklyMenuApi(weeklyMenusStart, skipDelay = false) {
   let liveWeeklyMenus = structuredClone(weeklyMenusStart);
 
   /**
@@ -37,7 +34,11 @@ export function getWeeklyMenuApi(
     await delay();
 
     const weekStartId = weeklyMenu.weekStartId;
-    if (liveWeeklyMenus.some((weeklyMenu) => weeklyMenu.weekStartId === weekStartId)) {
+    if (
+      liveWeeklyMenus.some(
+        (weeklyMenu) => weeklyMenu.weekStartId === weekStartId,
+      )
+    ) {
       return null;
     }
 

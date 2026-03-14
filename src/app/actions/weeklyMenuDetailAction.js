@@ -1,9 +1,9 @@
-import * as constants from '../../constants.js'
+import * as constants from '../../constants.js';
 
 /**
  * Opens the view with a detail of a weekly menu.
  */
-export async function weeklyMenuDetailAction({ store, api, payload }) {
+export async function weeklyMenuDetailAction({store, api, payload}) {
   store.setState((state) => ({
     ...state,
     ui: {
@@ -11,7 +11,7 @@ export async function weeklyMenuDetailAction({ store, api, payload }) {
       view: constants.ACTION_WEEKLY_MENU_DETAIL,
       status: constants.LOADING,
       selectedWeekStartId: payload.weekStartId,
-    }
+    },
   }));
 
   const weeklyMenu = await api.weeklyMenu.getWeeklyMenu(payload.weekStartId);
@@ -24,8 +24,8 @@ export async function weeklyMenuDetailAction({ store, api, payload }) {
         view: constants.ACTION_WEEKLY_MENU_LIST,
         status: constants.LOADED,
         selectedWeekStartId: null,
-        errorMessage: t("weeklyMenuNotFound"),
-      }
+        errorMessage: t('weeklyMenuNotFound'),
+      },
     }));
     return;
   }
@@ -35,6 +35,6 @@ export async function weeklyMenuDetailAction({ store, api, payload }) {
     ui: {
       ...state.ui,
       status: constants.LOADED,
-    }
+    },
   }));
 }

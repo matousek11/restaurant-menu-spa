@@ -9,29 +9,29 @@ import {makeWeeklyMenuEditAction} from '../../../../src/app/actions/makeWeeklyMe
 import {makeWeeklyMenuDeleteAction} from '../../../../src/app/actions/makeWeeklyMenuDeleteAction';
 
 const newWeeklyMenu = {
-    weekStartId: '2026-02-23',
-    state: constants.WEEKLY_MENU_DRAFT,
-    days: [
-      {
-        dayId: 0,
-        meals: [
-          {
-            id: '54e4eb3d-0a67-484d-aec3-dd76dfdba9f9',
-            templateId: null,
-            name: {cz: 'Svíčková', en: 'Beef Sirloin in Cream Sauce'},
-            price: 145,
-            allergens: [1, 7, 9],
-          },
-        ],
-      },
-    ],
-  };
+  weekStartId: '2026-02-23',
+  state: constants.WEEKLY_MENU_DRAFT,
+  days: [
+    {
+      dayId: 0,
+      meals: [
+        {
+          id: '54e4eb3d-0a67-484d-aec3-dd76dfdba9f9',
+          templateId: null,
+          name: {cz: 'Svíčková', en: 'Beef Sirloin in Cream Sauce'},
+          price: 145,
+          allergens: [1, 7, 9],
+        },
+      ],
+    },
+  ],
+};
 
 function createWeeklyMenuTestSetup(weeklyMenus = getWeeklyMenus()) {
   const store = createStore(createInitialState());
   const api = getMockApi(weeklyMenus, true);
   store.setState((s) => ({...s, weeklyMenus: [...weeklyMenus]}));
-  return { store, api, weeklyMenus };
+  return {store, api, weeklyMenus};
 }
 
 describe('Make weekly menu actions (create, edit, delete)', () => {
@@ -43,7 +43,11 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
 
     const updatedState = store.getState();
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length + 1);
-    expect(updatedState.weeklyMenus.find((m) => m.weekStartId === newWeeklyMenu.weekStartId)).toBeDefined();
+    expect(
+      updatedState.weeklyMenus.find(
+        (m) => m.weekStartId === newWeeklyMenu.weekStartId,
+      ),
+    ).toBeDefined();
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_DETAIL);
     expect(updatedState.ui.selectedWeekStartId).toBe(newWeeklyMenu.weekStartId);
     expect(updatedState.ui.status).toBe(constants.LOADED);
@@ -52,7 +56,8 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
   it('keeps create view and sets error when week already has a menu', async () => {
     const initialWeeklyMenus = getWeeklyMenus();
     initialWeeklyMenus[0].weekStartId = newWeeklyMenu.weekStartId;
-    const {store, api, weeklyMenus} = createWeeklyMenuTestSetup(initialWeeklyMenus);
+    const {store, api, weeklyMenus} =
+      createWeeklyMenuTestSetup(initialWeeklyMenus);
     const t = store.getTranslator();
     const payload = {weeklyMenu: newWeeklyMenu};
 
@@ -61,23 +66,28 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
     const updatedState = store.getState();
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length);
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_CREATE);
-    expect(updatedState.ui.errorMessage).toBe(t("weeklyMenuAlreadyExists"));
+    expect(updatedState.ui.errorMessage).toBe(t('weeklyMenuAlreadyExists'));
     expect(updatedState.ui.status).toBe(constants.LOADED);
   });
 
   it('updates weekly menu and navigates to detail', async () => {
     const initialWeeklyMenus = getWeeklyMenus();
     initialWeeklyMenus[0].weekStartId = newWeeklyMenu.weekStartId;
-    const {store, api, weeklyMenus} = createWeeklyMenuTestSetup(initialWeeklyMenus);
+    const {store, api, weeklyMenus} =
+      createWeeklyMenuTestSetup(initialWeeklyMenus);
     const payload = {weeklyMenu: newWeeklyMenu};
 
     await makeWeeklyMenuEditAction({store, api, payload});
 
     const updatedState = store.getState();
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length);
-    expect(updatedState.weeklyMenus[0].weekStartId).toBe(initialWeeklyMenus[0].weekStartId);
+    expect(updatedState.weeklyMenus[0].weekStartId).toBe(
+      initialWeeklyMenus[0].weekStartId,
+    );
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_DETAIL);
-    expect(updatedState.ui.selectedWeekStartId).toBe(initialWeeklyMenus[0].weekStartId);
+    expect(updatedState.ui.selectedWeekStartId).toBe(
+      initialWeeklyMenus[0].weekStartId,
+    );
     expect(updatedState.ui.status).toBe(constants.LOADED);
   });
 
@@ -92,7 +102,9 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length);
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_EDIT);
     expect(updatedState.ui.selectedWeekStartId).toBe(newWeeklyMenu.weekStartId);
-    expect(updatedState.ui.errorMessage).toBe(t("unableToUpdateNonExistentWeeklyMenu"));
+    expect(updatedState.ui.errorMessage).toBe(
+      t('unableToUpdateNonExistentWeeklyMenu'),
+    );
     expect(updatedState.ui.status).toBe(constants.LOADED);
   });
 
@@ -105,7 +117,9 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
 
     const updatedState = store.getState();
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length - 1);
-    expect(updatedState.weeklyMenus.find((m) => m.weekStartId === weekStartId)).toBeUndefined();
+    expect(
+      updatedState.weeklyMenus.find((m) => m.weekStartId === weekStartId),
+    ).toBeUndefined();
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_LIST);
     expect(updatedState.ui.status).toBe(constants.LOADED);
   });
@@ -121,6 +135,8 @@ describe('Make weekly menu actions (create, edit, delete)', () => {
     expect(updatedState.weeklyMenus).toHaveLength(weeklyMenus.length);
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_LIST);
     expect(updatedState.ui.status).toBe(constants.LOADED);
-    expect(updatedState.ui.errorMessage).toBe(t("unableToDeleteNonExistentWeeklyMenu"));
+    expect(updatedState.ui.errorMessage).toBe(
+      t('unableToDeleteNonExistentWeeklyMenu'),
+    );
   });
 });

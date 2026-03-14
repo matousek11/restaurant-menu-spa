@@ -1,5 +1,5 @@
-import { createInitialState } from './state.js';
-import { createStore } from '../infra/store/createStore.js';
+import {createInitialState} from './state.js';
+import {createStore} from '../infra/store/createStore.js';
 import {createDispatcher} from './dispatch';
 import {appInit} from './appInit';
 import {getWeeklyMenus} from '../database/weeklyMenuData';

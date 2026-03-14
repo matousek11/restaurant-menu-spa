@@ -14,7 +14,7 @@ import {weeklyMenuListAction} from '../../../../src/app/actions/weeklyMenuListAc
 function createWeeklyMenuTestSetup(weeklyMenus = getWeeklyMenus()) {
   const store = createStore(createInitialState());
   const api = getMockApi(weeklyMenus, true);
-  return { store, api, weeklyMenus };
+  return {store, api, weeklyMenus};
 }
 
 describe('Weekly menu actions (view/navigation only)', () => {
@@ -43,14 +43,14 @@ describe('Weekly menu actions (view/navigation only)', () => {
   it('returns to list and sets error when weekly menu to edit does not exist', async () => {
     const {store, api} = createWeeklyMenuTestSetup();
     const t = store.getTranslator();
-    const payload = {weekStartId: "2026-02-10"};
+    const payload = {weekStartId: '2026-02-10'};
 
     await weeklyMenuEditAction({store, api, payload});
 
     const updatedState = store.getState();
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_LIST);
     expect(updatedState.ui.status).toBe(constants.LOADED);
-    expect(updatedState.ui.errorMessage).toBe(t("weeklyMenuNotFound"));
+    expect(updatedState.ui.errorMessage).toBe(t('weeklyMenuNotFound'));
     expect(updatedState.ui.selectedWeekStartId).toBe(null);
   });
 
@@ -70,14 +70,14 @@ describe('Weekly menu actions (view/navigation only)', () => {
   it('returns to list and sets error when weekly menu detail does not exist', async () => {
     const {store, api} = createWeeklyMenuTestSetup();
     const t = store.getTranslator();
-    const payload = {weeklyMenuId: "2026-02-10"};
+    const payload = {weeklyMenuId: '2026-02-10'};
 
     await weeklyMenuDetailAction({store, api, payload});
 
     const updatedState = store.getState();
     expect(updatedState.ui.view).toBe(constants.ACTION_WEEKLY_MENU_LIST);
     expect(updatedState.ui.status).toBe(constants.LOADED);
-    expect(updatedState.ui.errorMessage).toBe(t("weeklyMenuNotFound"));
+    expect(updatedState.ui.errorMessage).toBe(t('weeklyMenuNotFound'));
     expect(updatedState.ui.selectedWeekStartId).toBe(null);
   });
 
@@ -108,7 +108,7 @@ describe('Weekly menu actions (view/navigation only)', () => {
     const updatedState = store.getState();
     expect(updatedState.ui.status).toBe(constants.LOADED);
     expect(updatedState.ui.view).toBe(constants.ACTION_CURRENT_WEEKLY_MENU);
-    expect(updatedState.ui.errorMessage).toBe(t("currentWeeklyMenuNotFound"));
+    expect(updatedState.ui.errorMessage).toBe(t('currentWeeklyMenuNotFound'));
   });
 
   it('navigates to weekly menu list view', () => {

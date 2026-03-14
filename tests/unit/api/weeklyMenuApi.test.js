@@ -13,8 +13,8 @@ const additionalWeeklyMenu = {
       dayId: 2,
       meals: [
         {
-          id: "54e4eb3d-0a67-484d-aec3-dd76dfdba8f8", // uuid
-          templateId: null, // null (when not templated meal)
+          id: '54e4eb3d-0a67-484d-aec3-dd76dfdba8f8',
+          templateId: null,
           name: {cz: 'Svíčková', en: 'Beef Sirloin in Cream Sauce'},
           price: 145,
           allergens: [1, 7, 9],

@@ -1,4 +1,4 @@
-import * as constants from '../constants.js'
+import * as constants from '../constants.js';
 import {weeklyMenuCreateAction} from './actions/weeklyMenuCreateAction';
 import {weeklyMenuEditAction} from './actions/weeklyMenuEditAction';
 import {weeklyMenuListAction} from './actions/weeklyMenuListAction';
@@ -17,7 +17,7 @@ import {getMondayDateOfCurrentWeek} from './helpers/dateManipulation';
  */
 export function createDispatcher(store, api) {
   return async function dispatch(action) {
-    console.log("Dispatch action: " + action);
+    console.log('Dispatch action: ' + action);
 
     switch (action.type) {
       case constants.ACTION_WEEKLY_MENU_CREATE:
@@ -32,19 +32,21 @@ export function createDispatcher(store, api) {
         const payload = {weeklyMenuId: getMondayDateOfCurrentWeek()};
         return currentWeeklyMenuAction({store, api, payload});
       case constants.ACTION_MAKE_WEEKLY_MENU_CREATE:
-        return makeWeeklyMenuCreateAction(
-          {store, api, payload: action.payload},
-        );
+        return makeWeeklyMenuCreateAction({
+          store,
+          api,
+          payload: action.payload,
+        });
       case constants.ACTION_MAKE_WEEKLY_MENU_EDIT:
-        return makeWeeklyMenuEditAction(
-          {store, api, payload: action.payload},
-        );
+        return makeWeeklyMenuEditAction({store, api, payload: action.payload});
       case constants.ACTION_MAKE_WEEKLY_MENU_DELETE:
-        return makeWeeklyMenuDeleteAction(
-          {store, api, payload: action.payload},
-        );
+        return makeWeeklyMenuDeleteAction({
+          store,
+          api,
+          payload: action.payload,
+        });
       default:
-        console.error("Unknown action: " + action);
+        console.error('Unknown action: ' + action);
     }
-  }
+  };
 }

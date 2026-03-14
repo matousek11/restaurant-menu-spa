@@ -1,17 +1,17 @@
-import * as constants from '../../constants.js'
+import * as constants from '../../constants.js';
 
 /**
  * Saves a new weekly menu.
  */
-export async function makeWeeklyMenuCreateAction({ store, api, payload }) {
-  const weeklyMenuId = payload.weeklyMenu.weekStartId
+export async function makeWeeklyMenuCreateAction({store, api, payload}) {
+  const weeklyMenuId = payload.weeklyMenu.weekStartId;
   store.setState((state) => ({
     ...state,
     ui: {
       ...state.ui,
       status: constants.LOADING,
       selectedWeekStartId: weeklyMenuId,
-    }
+    },
   }));
 
   const result = await api.weeklyMenu.addWeeklyMenu(payload.weeklyMenu);
@@ -23,8 +23,8 @@ export async function makeWeeklyMenuCreateAction({ store, api, payload }) {
         ...state.ui,
         view: constants.ACTION_WEEKLY_MENU_CREATE,
         status: constants.LOADED,
-        errorMessage: t("weeklyMenuAlreadyExists"),
-      }
+        errorMessage: t('weeklyMenuAlreadyExists'),
+      },
     }));
 
     return;
@@ -37,7 +37,6 @@ export async function makeWeeklyMenuCreateAction({ store, api, payload }) {
       ...state.ui,
       view: constants.ACTION_WEEKLY_MENU_DETAIL,
       status: constants.LOADED,
-    }
+    },
   }));
 }
-

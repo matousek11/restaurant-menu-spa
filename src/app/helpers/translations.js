@@ -18,22 +18,29 @@ export function createTranslator(getState, translations) {
 
   return function t(key) {
     return getTranslation(getState().ui.language, key);
-  }
+  };
 }
 
 export const translations = {
   cs: {
-    "currentWeeklyMenuNotFound": "Týdenní menu pro aktuální týden nebylo nalezeno.",
-    "weeklyMenuAlreadyExists": "Týdenní menu pro zvolený týden již existuje.",
-    "weeklyMenuNotFound": "Týdenní menu nebylo nalezeno.",
-    "unableToUpdateNonExistentWeeklyMenu": "Týdenní menu nelze aktualizovat, protože neexistuje.",
-    "unableToDeleteNonExistentWeeklyMenu": "Týdenní menu nelze smazat, protože neexistuje.",
+    currentWeeklyMenuNotFound:
+      'Týdenní menu pro aktuální týden nebylo nalezeno.',
+    weeklyMenuAlreadyExists: 'Týdenní menu pro zvolený týden již existuje.',
+    weeklyMenuNotFound: 'Týdenní menu nebylo nalezeno.',
+    unableToUpdateNonExistentWeeklyMenu:
+      'Týdenní menu nelze aktualizovat, protože neexistuje.',
+    unableToDeleteNonExistentWeeklyMenu:
+      'Týdenní menu nelze smazat, protože neexistuje.',
   },
   en: {
-    "currentWeeklyMenuNotFound": "Weekly menu for the current week was not found.",
-    "weeklyMenuAlreadyExists": "Weekly menu for the selected week already exists.",
-    "weeklyMenuNotFound": "Weekly menu was not found.",
-    "unableToUpdateNonExistentWeeklyMenu": "Weekly menu cannot be updated because it does not exist.",
-    "unableToDeleteNonExistentWeeklyMenu": "Weekly menu cannot be deleted because it does not exist.",
+    currentWeeklyMenuNotFound:
+      'Weekly menu for the current week was not found.',
+    weeklyMenuAlreadyExists:
+      'Weekly menu for the selected week already exists.',
+    weeklyMenuNotFound: 'Weekly menu was not found.',
+    unableToUpdateNonExistentWeeklyMenu:
+      'Weekly menu cannot be updated because it does not exist.',
+    unableToDeleteNonExistentWeeklyMenu:
+      'Weekly menu cannot be deleted because it does not exist.',
   },
-}
+};

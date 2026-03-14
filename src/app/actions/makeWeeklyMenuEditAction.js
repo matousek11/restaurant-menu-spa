@@ -1,17 +1,17 @@
-import * as constants from '../../constants.js'
+import * as constants from '../../constants.js';
 
 /**
  * Updates existing weekly menu.
  */
-export async function makeWeeklyMenuEditAction({ store, api, payload }) {
-  const weekStartId = payload.weeklyMenu.weekStartId
+export async function makeWeeklyMenuEditAction({store, api, payload}) {
+  const weekStartId = payload.weeklyMenu.weekStartId;
   store.setState((state) => ({
     ...state,
     ui: {
       ...state.ui,
       status: constants.LOADING,
       selectedWeekStartId: weekStartId,
-    }
+    },
   }));
 
   const result = await api.weeklyMenu.updateWeeklyMenu(payload.weeklyMenu);
@@ -23,8 +23,8 @@ export async function makeWeeklyMenuEditAction({ store, api, payload }) {
         ...state.ui,
         view: constants.ACTION_WEEKLY_MENU_EDIT,
         status: constants.LOADED,
-        errorMessage: t("unableToUpdateNonExistentWeeklyMenu"),
-      }
+        errorMessage: t('unableToUpdateNonExistentWeeklyMenu'),
+      },
     }));
 
     return;
@@ -32,14 +32,13 @@ export async function makeWeeklyMenuEditAction({ store, api, payload }) {
 
   store.setState((state) => ({
     ...state,
-    weeklyMenus: state.weeklyMenus.map(
-      weeklyMenu => weeklyMenu.weekStartId === weekStartId ? result : weeklyMenu
+    weeklyMenus: state.weeklyMenus.map((weeklyMenu) =>
+      weeklyMenu.weekStartId === weekStartId ? result : weeklyMenu,
     ),
     ui: {
       ...state.ui,
       view: constants.ACTION_WEEKLY_MENU_DETAIL,
       status: constants.LOADED,
-    }
+    },
   }));
 }
-

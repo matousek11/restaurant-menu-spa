@@ -10,7 +10,7 @@ export async function appInit(store, api) {
       ui: {
         ...state.ui,
         status: constants.LOADED,
-      }
+      },
     }));
   } catch (error) {
     store.setState((state) => ({
@@ -19,7 +19,7 @@ export async function appInit(store, api) {
         ...state.ui,
         status: constants.ERROR,
         errorMessage: error.message,
-      }
+      },
     }));
   }
 }
