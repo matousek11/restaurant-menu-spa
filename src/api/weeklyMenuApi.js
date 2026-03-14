@@ -1,31 +1,57 @@
 /**
+ * @typedef {Object} WeeklyMenuApi
+ * @property {(weeklyMenu: any) => Promise<any | null>} addWeeklyMenu
+ * @property {(updatedWeeklyMenu: any) => Promise<any | null>} updateWeeklyMenu
+ * @property {() => Promise<any[]>} getWeeklyMenus
+ * @property {(weekStartId: string) => Promise<any | null>} getWeeklyMenu
+ * @property {(weekStartId: string) => Promise<boolean>} removeWeeklyMenu
+ * @property {(weeklyMenuId: string, dayId: string, mealId: string) => Promise<any>} addTemplateMealToWeeklyMenu
+ * @property {(weeklyMenuId: string, dayId: string, mealId: string) => Promise<boolean>} removeTemplateMealFromWeeklyMenu
+ * @property {(weeklyMenuId: string, dayId: string, meal: any) => Promise<any | null>} addMealToWeeklyMenu
+ * @property {(weeklyMenuId: string, dayId: string, meal: any) => Promise<any | null>} updateMealInWeeklyMenu
+ * @property {(weeklyMenuId: string, dayId: string, mealId: string) => Promise<boolean>} removeMealFromWeeklyMenu
+ */
+
+/**
  * Offer mocked API for a weekly menu.
  *
- * @param weeklyMenusStart Initial state of a database
- * @returns api endpoints for a weekly menu
+ * @param {any[]} weeklyMenusStart Initial state of a database
+ * @param {boolean} skipDelay when true delays simulating async
+ * communication is skipped
+ * @returns {WeeklyMenuApi} api endpoints for a weekly menu
  */
-export function getWeeklyMenuApi(weeklyMenusStart) {
+export function getWeeklyMenuApi(weeklyMenusStart, skipDelay = false) {
   let liveWeeklyMenus = structuredClone(weeklyMenusStart);
 
   /**
    * Adds a new weekly menu and return all weekly menus.
    *
    * @param weeklyMenu full weekly menu object
-   * @returns {Promise<any>}
+   * @returns {Promise<any | null>} added weekly menu or null when
+   * a weekly menu already exists in selected week
    */
   async function addWeeklyMenu(weeklyMenu) {
     await delay();
 
+    const weekStartId = weeklyMenu.weekStartId;
+    if (
+      liveWeeklyMenus.some(
+        (weeklyMenu) => weeklyMenu.weekStartId === weekStartId,
+      )
+    ) {
+      return null;
+    }
+
     liveWeeklyMenus.push(weeklyMenu);
 
-    return structuredClone(liveWeeklyMenus);
+    return structuredClone(weeklyMenu);
   }
 
   /**
    * Updates a weekly menu and return all weekly menus.
    *
    * @param updatedWeeklyMenu new version of a weekly menu with same weekStartId
-   * @returns {Promise<any|null>} all weekly menus when successful,
+   * @returns {Promise<any | null>} updated weekly menu when successful,
    * when a weekly menu not found null is returned
    */
   async function updateWeeklyMenu(updatedWeeklyMenu) {
@@ -40,7 +66,7 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
     }
 
     liveWeeklyMenus[index] = updatedWeeklyMenu;
-    return structuredClone(liveWeeklyMenus);
+    return structuredClone(updatedWeeklyMenu);
   }
 
   /**
@@ -76,8 +102,8 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
    * Deletes a weekly menu with selected id.
    *
    * @param weekStartId id of the weekly menu to be deleted ("2026-02-16")
-   * @returns {Promise<any>} Returns remaining weekly menus
-   * or null when no weekly menu deleted.
+   * @returns {Promise<boolean>} Returns true when deleted
+   * or false when no weekly menu deleted.
    */
   async function removeWeeklyMenu(weekStartId) {
     await delay();
@@ -87,11 +113,7 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
       (weeklyMenu) => weeklyMenu.weekStartId !== weekStartId,
     );
 
-    if (lengthBeforeDelete - liveWeeklyMenus.length === 0) {
-      return null;
-    }
-
-    return structuredClone(liveWeeklyMenus);
+    return lengthBeforeDelete - liveWeeklyMenus.length !== 0;
   }
 
   /**
@@ -112,7 +134,7 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
    * @param weeklyMenuId id of the weekly menu to be deleted ("2026-02-16")
    * @param dayId ID of a day in which meal should be
    * @param mealId ID of a template meal to remove
-   * @returns {Promise<any>} removed meal when found, otherwise null
+   * @returns {Promise<boolean>} true when meal removed, otherwise false
    */
   async function removeTemplateMealFromWeeklyMenu(weeklyMenuId, dayId, mealId) {
     // TODO: Add when meal structure is ready
@@ -124,7 +146,7 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
    * @param weeklyMenuId id of the weekly menu to be deleted ("2026-02-16")
    * @param dayId ID of a day in which meal should be
    * @param meal Meal that is going to be added to the weekly menu
-   * @returns {Promise<boolean>} true when meal is added, false otherwise
+   * @returns {Promise<any | null>} added meal when added, null otherwise
    */
   async function addMealToWeeklyMenu(weeklyMenuId, dayId, meal) {
     // TODO: Add when meal structure is ready
@@ -136,7 +158,7 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
    * @param weeklyMenuId id of the weekly menu to be deleted ("2026-02-16")
    * @param dayId ID of a day in which meal should be
    * @param meal new version of meal that is going to the weekly menu
-   * @returns {Promise<any>} added meal
+   * @returns {Promise<any | null>} if updated meal is returned, otherwise null
    */
   async function updateMealInWeeklyMenu(weeklyMenuId, dayId, meal) {
     // TODO: Add when meal structure is ready
@@ -148,14 +170,16 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
    * @param weeklyMenuId id of the weekly menu to be deleted ("2026-02-16")
    * @param dayId ID of a day in which meal should be
    * @param mealId Meal that is going to be added to the weekly menu
-   * @returns {Promise<boolean>} true when meal is removed, false otherwise
+   * @returns {Promise<boolean>} true when meal removed, false otherwise
    */
   async function removeMealFromWeeklyMenu(weeklyMenuId, dayId, mealId) {
     // TODO: Add when meal structure is ready
   }
 
   function delay(ms = 400) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    const finalDelay = skipDelay ? 0 : ms;
+
+    return new Promise((resolve) => setTimeout(resolve, finalDelay));
   }
 
   return {
@@ -164,5 +188,10 @@ export function getWeeklyMenuApi(weeklyMenusStart) {
     getWeeklyMenus,
     getWeeklyMenu,
     removeWeeklyMenu,
+    addTemplateMealToWeeklyMenu,
+    removeTemplateMealFromWeeklyMenu,
+    addMealToWeeklyMenu,
+    updateMealInWeeklyMenu,
+    removeMealFromWeeklyMenu,
   };
 }

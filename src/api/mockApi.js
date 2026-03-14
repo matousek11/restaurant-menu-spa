@@ -1,11 +1,23 @@
 import {getWeeklyMenuApi} from './weeklyMenuApi';
 
 /**
- * @param weeklyMenusStart initial state
- * @returns mock APIs for available entities
+ * @typedef {Object} MockApi
+ * @property {import('./weeklyMenuApi').WeeklyMenuApi} weeklyMenu
+ * @property {null} meal
+ * @property {null} allergen
+ * @property {null} auth
  */
-export function getMockApi(weeklyMenusStart) {
-  const weeklyMenuApi = getWeeklyMenuApi(weeklyMenusStart);
+
+/**
+ * Mocks backend of application.
+ *
+ * @param {boolean} skipDelay when true delays simulating async communication is skipped
+ * @param {any[]} weeklyMenusStart initial state
+ * @returns {MockApi} mock APIs for available entities
+ */
+export function getMockApi(weeklyMenusStart, skipDelay = false) {
+  /** @type {import('./weeklyMenuApi').WeeklyMenuApi} */
+  const weeklyMenuApi = getWeeklyMenuApi(weeklyMenusStart, skipDelay);
 
   return {
     weeklyMenu: weeklyMenuApi,

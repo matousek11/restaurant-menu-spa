@@ -2,3 +2,4 @@
 
 - install: `npm install`
 - tests: `npm run test`
+- code formatting: `npm run format`
