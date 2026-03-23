@@ -1,11 +1,12 @@
 import {getWeeklyMenuApi} from './weeklyMenuApi';
+import {getAuthApi} from './authApi';
 
 /**
  * @typedef {Object} MockApi
  * @property {import('./weeklyMenuApi').WeeklyMenuApi} weeklyMenu
  * @property {null} meal
  * @property {null} allergen
- * @property {null} auth
+ * @property {Object} auth
  */
 
 /**
@@ -18,11 +19,12 @@ import {getWeeklyMenuApi} from './weeklyMenuApi';
 export function getMockApi(weeklyMenusStart, skipDelay = false) {
   /** @type {import('./weeklyMenuApi').WeeklyMenuApi} */
   const weeklyMenuApi = getWeeklyMenuApi(weeklyMenusStart, skipDelay);
+  const authApi = getAuthApi(skipDelay);
 
   return {
     weeklyMenu: weeklyMenuApi,
     meal: null,
     allergen: null,
-    auth: null,
+    auth: authApi,
   };
 }
