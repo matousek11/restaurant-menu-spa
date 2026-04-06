@@ -85,40 +85,43 @@
 
 ## Vojtěch Kocourek
 
-### Entita Allergen
+### Entita Subscription
 
 - **stavy:**
-  - `PENDING` – alergen je evidován (např. na základě nové EU regulace), ale zatím není používán v aplikaci
-  - `ACTIVE` – alergen je plně v provozu a přiřaditelný k jídlům
-  - `ARCHIVED` – alergen byl zrušen nebo nahrazen (změna regulace, chyba zadání)
+  - `ACTIVE` – předplatné je aktivní, zákazník čerpá obědy z publikovaného týdenního menu, ubývají zbývající dny
+  - `PAUSED` – zákazník dočasně pozastavil předplatné, zbývající dny jsou zachovány
+  - `EXPIRED` – předplatné přirozeně vypršelo po vyčerpání všech zakoupených dnů
+  - `CANCELLED` – předplatné bylo trvale zrušeno zákazníkem
 - **povolené přechody mezi stavy:**
-  - `PENDING` -> `ACTIVE`
-    - podmínky pro přechod:
-      - alergen má vyplněný název a unikátní kód
-      - neexistuje jiný `ACTIVE` alergen se stejným kódem
-      - přechod musí být manuálně schválen adminem
-  - `ACTIVE` -> `ARCHIVED`
-    - podmínky pro přechod:
-      - žádné (existující přiřazení k jídlům jsou zachována jako historická data)
-  - `ARCHIVED` -> `PENDING`
-    - podmínky pro přechod žádné (reaktivace při změně regulace)
-  - `PENDING` -> `ARCHIVED`
-    - podmínky pro přechod žádné (zamítnutí před aktivací)
+  - `ACTIVE` -> `PAUSED`
+    - podmínky pro přechod žádné (zákazník si kdykoli může pozastavit čerpání)
+  - `PAUSED` -> `ACTIVE`
+    - podmínky pro přechod žádné (obnovení čerpání se zbývajícími dny)
+  - `ACTIVE` -> `EXPIRED`
+    - podmínky pro přechod: počet zbývajících dnů dosáhl nuly
+  - `ACTIVE` -> `CANCELLED`
+    - podmínky pro přechod žádné
+  - `PAUSED` -> `CANCELLED`
+    - podmínky pro přechod žádné
 - **popis odpovědnosti za chování:**
-  - Návštěvníci mají přístup pouze k alergenům ve stavu `ACTIVE`
-  - Každý alergen má unikátní kód dle EU legislativy
-  - Jídla mohou odkazovat na `ARCHIVED` alergeny (zachování historických dat), ale nová přiřazení jsou možná pouze k `ACTIVE` alergenům
+  - Zákazník (GUEST) vytvoří předplatné – stav je ihned `ACTIVE`, zbývající dny nastaveny dle zakoupeného rozsahu
+  - Zákazník může předplatné pozastavit (`PAUSED`) a kdykoli obnovit (`ACTIVE`) – dny se nepočítají v době pauzy
+  - Zákazník může předplatné kdykoli trvale zrušit (`CANCELLED`)
+  - Předplatné automaticky přejde do `EXPIRED`, jakmile zbývající dny dosáhnou nuly
+  - Předplatné lze vytvořit pouze pokud existuje `PUBLISHED` WeeklyMenu pro dané období
+  - Zákazník může mít nejvýše jedno `ACTIVE` nebo `PAUSED` předplatné současně
 
 ### Infrastrukturní odpovědnost
 
 - **IR04 – Router / Navigační logika**
-  - mapování URL adres na příslušné pohledy aplikace
+  - mapování URL adres na příslušné pohledy aplikace (`#/subscriptions`, `#/subscriptions/:id`, `#/subscriptions/create`)
   - parsování URL parametrů a synchronizace s adresou prohlížeče
   - převod URL změn na akce předávané do dispatcheru
+  - reakce na změny historie prohlížeče (popstate)
 - **IR05 – Selektory (výběr dat ze stavu)**
-  - filtrování alergenů dle stavu (pouze `ACTIVE` pro návštěvníky, všechny pro admina)
-  - odvozování hodnot pro UI (např. `canAssignAllergen`, `isAllergenArchived`)
-  - příprava dat pro konkrétní pohledy
+  - filtrování předplatných dle stavu (`ACTIVE`, `PAUSED`, `EXPIRED`, `CANCELLED`)
+  - odvozování hodnot pro UI (např. `canCreateSubscription`, `canPauseSubscription`, `canResumeSubscription`, `canCancelSubscription`)
+  - příprava dat pro konkrétní pohledy (seznam předplatných, detail s počtem zbývajících dnů)
 
 ## Honza Macháček
 
@@ -174,18 +177,18 @@
 - publishMeal
 - markMealUnavailable
 - markMealAvailable
-  **Allergen poskytuje operace:**
-- createAllergen
-- activateAllergen
-- archiveAllergen
-- reactivateAllergen
+  **Subscription poskytuje operace:**
+- createSubscription
+- pauseSubscription
+- resumeSubscription
+- cancelSubscription
+- expireSubscription
   **Vazby mezi entitami:**
 - WeeklyMenu obsahuje seznam Meal položek.
-- Meal může obsahovat seznam Allergen odkazů.
+- Subscription reaguje na stav WeeklyMenu:
+  - předplatné lze vytvořit pouze pokud existuje `PUBLISHED` WeeklyMenu pro dané období
 - Meal reaguje na stav WeeklyMenu:
 - pokud `WeeklyMenu.status ≠ PUBLISHED`, jídla nejsou zobrazena návštěvníkům
-  **Allergen reaguje na stav Meal:**
-- pouze alergeny ve stavu `ACTIVE` mohou být přiřazeny k jídlu
 
 ## Datové kontrakty
 
@@ -193,17 +196,17 @@
 
 - WeeklyMenu
 - Meal
-- Allergen
+- Subscription
 - Auth
   **Vlastník dat:**
 - WeeklyMenu – Lukáš Matoušek
 - Auth – Bohdan Melnyk
-- Allergen – Vojtěch Kocourek
+- Subscription – Vojtěch Kocourek
 - Meal – Honza Macháček
   **Kdo smí měnit stav:**
 - `WeeklyMenu.status` mění pouze přechodové funkce WeeklyMenu
 - `Meal.status` mění pouze přechodové funkce Meal
-- `Allergen.status` mění pouze přechodové funkce Allergen
+- `Subscription.status` mění pouze přechodové funkce Subscription
 - `Auth.state` mění pouze autentizační logika
   Globální `state` aplikace může být měněn výhradně přes dispatcher.
 
