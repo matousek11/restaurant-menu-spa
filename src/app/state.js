@@ -8,15 +8,20 @@ export function createInitialState() {
     // domain data
     weeklyMenus: [],
     meals: [],
-    allergens: [],
+    subscriptions: [],
+
+    // identity
+    currentUser: { userId: 'user-1' },
 
     // authorization
-    auth: {role: constants.UNAUTHORIZED},
+    auth: { role: constants.UNAUTHORIZED },
 
     // UI state
     ui: {
       view: constants.ACTION_CURRENT_WEEKLY_MENU,
+      mode: constants.MODE_SUBSCRIPTION_LIST,
       selectedWeekStartId: null,
+      selectedSubscriptionId: null,
       language: constants.LANG_ENGLISH,
       status: constants.LOADING,
       errorMessage: null,
