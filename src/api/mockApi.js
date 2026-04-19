@@ -16,7 +16,7 @@ import {getSubscriptionApi} from './subscriptionApi';
  *
  * @param {boolean} skipDelay when true delays simulating async communication is skipped
  * @param {any[]} weeklyMenusStart initial state
- * @param {any[]} mealsStart initial state
+ * @param {any[]} mealsStart
  * @returns {MockApi} mock APIs for available entities
  */
 export function getMockApi(weeklyMenusStart, skipDelay = false, mealsStart = []) {

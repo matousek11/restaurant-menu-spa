@@ -13,7 +13,7 @@ import {publishMeal, markMealUnavailable, markMealAvailable} from '../app/meal/m
  */
 
 /**
- * @param {any[]} mealsStart Initial state of the meals database
+ * @param {any[]} mealsStart
  * @param {boolean} skipDelay
  * @returns {MealApi}
  */

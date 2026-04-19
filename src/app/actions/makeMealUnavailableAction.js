@@ -1,9 +1,6 @@
 import * as constants from '../../constants.js';
 import {markMealUnavailable} from '../meal/mealTransitions.js';
 
-/**
- * Transitions a meal from AVAILABLE to UNAVAILABLE via API.
- */
 export async function makeMealUnavailableAction({store, api, payload}) {
   const state = store.getState();
   const meal = state.meals.find((m) => m.id === payload.mealId);

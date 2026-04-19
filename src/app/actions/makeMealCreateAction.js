@@ -1,9 +1,6 @@
 import * as constants from '../../constants.js';
 import {createMeal} from '../meal/mealTransitions.js';
 
-/**
- * Creates a new meal in DRAFT state and persists it via API.
- */
 export async function makeMealCreateAction({store, api, payload}) {
   store.setState((state) => ({
     ...state,

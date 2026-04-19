@@ -1,8 +1,5 @@
 import * as constants from '../../constants.js';
 
-/**
- * Updates meal data (name, price, allergens) for a meal in DRAFT state via API.
- */
 export async function makeMealUpdateAction({store, api, payload}) {
   store.setState((s) => ({
     ...s,

@@ -1,10 +1,6 @@
 import * as constants from '../../constants.js';
 import {publishMeal} from '../meal/mealTransitions.js';
 
-/**
- * Transitions a meal from DRAFT to AVAILABLE via API.
- * Guards the transition locally before calling the API.
- */
 export async function makeMealPublishAction({store, api, payload}) {
   const state = store.getState();
   const meal = state.meals.find((m) => m.id === payload.mealId);
