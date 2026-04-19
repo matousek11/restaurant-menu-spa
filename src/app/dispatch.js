@@ -8,6 +8,13 @@ import {makeWeeklyMenuCreateAction} from './actions/makeWeeklyMenuCreateAction';
 import {makeWeeklyMenuEditAction} from './actions/makeWeeklyMenuEditAction';
 import {makeWeeklyMenuDeleteAction} from './actions/makeWeeklyMenuDeleteAction';
 import {getMondayDateOfCurrentWeek} from './helpers/dateManipulation';
+import {mealListAction} from './actions/mealListAction';
+import {mealCreateAction} from './actions/mealCreateAction';
+import {makeMealCreateAction} from './actions/makeMealCreateAction';
+import {makeMealPublishAction} from './actions/makeMealPublishAction';
+import {makeMealUnavailableAction} from './actions/makeMealUnavailableAction';
+import {makeMealAvailableAction} from './actions/makeMealAvailableAction';
+import {makeMealUpdateAction} from './actions/makeMealUpdateAction';
 import {enterSubscriptionsAction} from './actions/enterSubscriptionsAction';
 import {enterSubscriptionDetailAction} from './actions/enterSubscriptionDetailAction';
 import {createSubscriptionAction} from './actions/createSubscriptionAction';
@@ -52,6 +59,20 @@ export function createDispatcher(store, api) {
           api,
           payload: action.payload,
         });
+      case constants.ACTION_MEAL_LIST:
+        return mealListAction({store});
+      case constants.ACTION_MEAL_CREATE:
+        return mealCreateAction({store});
+      case constants.ACTION_MAKE_MEAL_CREATE:
+        return makeMealCreateAction({store, api, payload: action.payload});
+      case constants.ACTION_MAKE_MEAL_PUBLISH:
+        return makeMealPublishAction({store, api, payload: action.payload});
+      case constants.ACTION_MAKE_MEAL_MARK_UNAVAILABLE:
+        return makeMealUnavailableAction({store, api, payload: action.payload});
+      case constants.ACTION_MAKE_MEAL_MARK_AVAILABLE:
+        return makeMealAvailableAction({store, api, payload: action.payload});
+      case constants.ACTION_MAKE_MEAL_UPDATE:
+        return makeMealUpdateAction({store, api, payload: action.payload});
       case constants.ACTION_ENTER_SUBSCRIPTIONS:
         return enterSubscriptionsAction({store});
       case constants.ACTION_ENTER_SUBSCRIPTION_DETAIL:

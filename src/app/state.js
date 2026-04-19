@@ -1,4 +1,5 @@
 import * as constants from '../constants.js';
+import {createInitialAuthState} from './auth/authTransitions.js';
 
 /**
  * @returns initial state of application
@@ -13,8 +14,8 @@ export function createInitialState() {
     // identity
     currentUser: { userId: 'user-1' },
 
-    // authorization
-    auth: { role: constants.UNAUTHORIZED },
+    // authorization – restored from localStorage if a token exists
+    auth: createInitialAuthState(),
 
     // UI state
     ui: {
