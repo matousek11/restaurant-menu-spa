@@ -15,6 +15,13 @@ import {makeMealPublishAction} from './actions/makeMealPublishAction';
 import {makeMealUnavailableAction} from './actions/makeMealUnavailableAction';
 import {makeMealAvailableAction} from './actions/makeMealAvailableAction';
 import {makeMealUpdateAction} from './actions/makeMealUpdateAction';
+import {enterSubscriptionsAction} from './actions/enterSubscriptionsAction';
+import {enterSubscriptionDetailAction} from './actions/enterSubscriptionDetailAction';
+import {createSubscriptionAction} from './actions/createSubscriptionAction';
+import {pauseSubscriptionAction} from './actions/pauseSubscriptionAction';
+import {resumeSubscriptionAction} from './actions/resumeSubscriptionAction';
+import {cancelSubscriptionAction} from './actions/cancelSubscriptionAction';
+import {enterSubscriptionCreateAction} from './actions/enterSubscriptionCreateAction';
 
 /**
  *
@@ -66,6 +73,21 @@ export function createDispatcher(store, api) {
         return makeMealAvailableAction({store, api, payload: action.payload});
       case constants.ACTION_MAKE_MEAL_UPDATE:
         return makeMealUpdateAction({store, api, payload: action.payload});
+      case constants.ACTION_ENTER_SUBSCRIPTIONS:
+        return enterSubscriptionsAction({store});
+      case constants.ACTION_ENTER_SUBSCRIPTION_DETAIL:
+        return enterSubscriptionDetailAction({store, payload: action.payload});
+      case constants.ACTION_ENTER_SUBSCRIPTION_CREATE:
+        return enterSubscriptionCreateAction({store});
+      case constants.ACTION_CREATE_SUBSCRIPTION:
+        return createSubscriptionAction({store, api, payload: action.payload});
+      case constants.ACTION_PAUSE_SUBSCRIPTION:
+        return pauseSubscriptionAction({store, api, payload: action.payload});
+      case constants.ACTION_RESUME_SUBSCRIPTION:
+        return resumeSubscriptionAction({store, api, payload: action.payload});
+      case constants.ACTION_CANCEL_SUBSCRIPTION:
+        return cancelSubscriptionAction({store, api, payload: action.payload});
+
       default:
         console.error('Unknown action: ' + action);
     }
