@@ -1,4 +1,4 @@
-import * as constants from '../constants';
+import * as constants from '../constants.js';
 import {logout} from './auth/authTransitions.js';
 
 export async function appInit(store, api) {

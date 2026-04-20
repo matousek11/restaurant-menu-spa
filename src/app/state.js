@@ -20,7 +20,7 @@ export function createInitialState() {
     // UI state
     ui: {
       view: constants.ACTION_CURRENT_WEEKLY_MENU,
-      mode: constants.MODE_SUBSCRIPTION_LIST,
+      mode: constants.MODE_SUBSCRIPTION_LIST, // TODO: je tohle potřeba? Nestačí view klíč?
       selectedWeekStartId: null,
       selectedSubscriptionId: null,
       language: constants.LANG_ENGLISH,

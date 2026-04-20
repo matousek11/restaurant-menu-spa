@@ -25,6 +25,7 @@ export async function makeWeeklyMenuDeleteAction({store, api, payload}) {
       },
     }));
 
+    window.location.hash = '#/not-found'
     return;
   }
 
@@ -39,4 +40,6 @@ export async function makeWeeklyMenuDeleteAction({store, api, payload}) {
       status: constants.LOADED,
     },
   }));
+
+  window.location.hash = '#/weekly-menu'
 }

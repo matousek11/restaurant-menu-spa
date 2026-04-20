@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} WeeklyMenuApi
  * @property {(weeklyMenu: any) => Promise<any | null>} addWeeklyMenu
- * @property {(updatedWeeklyMenu: any) => Promise<any | null>} updateWeeklyMenu
+ * @property {(updatedWeeklyMenu: any, weekStartId: ?string) => Promise<any | null>} updateWeeklyMenu
  * @property {() => Promise<any[]>} getWeeklyMenus
  * @property {(weekStartId: string) => Promise<any | null>} getWeeklyMenu
  * @property {(weekStartId: string) => Promise<boolean>} removeWeeklyMenu
@@ -54,11 +54,11 @@ export function getWeeklyMenuApi(weeklyMenusStart, skipDelay = false) {
    * @returns {Promise<any | null>} updated weekly menu when successful,
    * when a weekly menu not found null is returned
    */
-  async function updateWeeklyMenu(updatedWeeklyMenu) {
+  async function updateWeeklyMenu(updatedWeeklyMenu, weekStartId = null) {
     await delay();
 
     const index = liveWeeklyMenus.findIndex(
-      (weeklyMenu) => weeklyMenu.weekStartId === updatedWeeklyMenu.weekStartId,
+      (weeklyMenu) => weeklyMenu.weekStartId === (weekStartId ?? updatedWeeklyMenu.weekStartId),
     );
 
     if (index === -1) {

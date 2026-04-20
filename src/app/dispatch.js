@@ -1,27 +1,29 @@
 import * as constants from '../constants.js';
-import {weeklyMenuCreateAction} from './actions/weeklyMenuCreateAction';
-import {weeklyMenuEditAction} from './actions/weeklyMenuEditAction';
-import {weeklyMenuListAction} from './actions/weeklyMenuListAction';
-import {weeklyMenuDetailAction} from './actions/weeklyMenuDetailAction';
-import {currentWeeklyMenuAction} from './actions/currentWeeklyMenuAction';
-import {makeWeeklyMenuCreateAction} from './actions/makeWeeklyMenuCreateAction';
-import {makeWeeklyMenuEditAction} from './actions/makeWeeklyMenuEditAction';
-import {makeWeeklyMenuDeleteAction} from './actions/makeWeeklyMenuDeleteAction';
-import {getMondayDateOfCurrentWeek} from './helpers/dateManipulation';
-import {mealListAction} from './actions/mealListAction';
-import {mealCreateAction} from './actions/mealCreateAction';
-import {makeMealCreateAction} from './actions/makeMealCreateAction';
-import {makeMealPublishAction} from './actions/makeMealPublishAction';
-import {makeMealUnavailableAction} from './actions/makeMealUnavailableAction';
-import {makeMealAvailableAction} from './actions/makeMealAvailableAction';
-import {makeMealUpdateAction} from './actions/makeMealUpdateAction';
-import {enterSubscriptionsAction} from './actions/enterSubscriptionsAction';
-import {enterSubscriptionDetailAction} from './actions/enterSubscriptionDetailAction';
-import {createSubscriptionAction} from './actions/createSubscriptionAction';
-import {pauseSubscriptionAction} from './actions/pauseSubscriptionAction';
-import {resumeSubscriptionAction} from './actions/resumeSubscriptionAction';
-import {cancelSubscriptionAction} from './actions/cancelSubscriptionAction';
-import {enterSubscriptionCreateAction} from './actions/enterSubscriptionCreateAction';
+import {weeklyMenuCreateAction} from './actions/weeklyMenuCreateAction.js';
+import {weeklyMenuEditAction} from './actions/weeklyMenuEditAction.js';
+import {weeklyMenuListAction} from './actions/weeklyMenuListAction.js';
+import {weeklyMenuDetailAction} from './actions/weeklyMenuDetailAction.js';
+import {currentWeeklyMenuAction} from './actions/currentWeeklyMenuAction.js';
+import {makeWeeklyMenuCreateAction} from './actions/makeWeeklyMenuCreateAction.js';
+import {makeWeeklyMenuEditAction} from './actions/makeWeeklyMenuEditAction.js';
+import {makeWeeklyMenuDeleteAction} from './actions/makeWeeklyMenuDeleteAction.js';
+import {getMondayDateOfCurrentWeek} from './helpers/dateManipulation.js';
+import {mealListAction} from './actions/mealListAction.js';
+import {mealCreateAction} from './actions/mealCreateAction.js';
+import {makeMealCreateAction} from './actions/makeMealCreateAction.js';
+import {makeMealPublishAction} from './actions/makeMealPublishAction.js';
+import {makeMealUnavailableAction} from './actions/makeMealUnavailableAction.js';
+import {makeMealAvailableAction} from './actions/makeMealAvailableAction.js';
+import {makeMealUpdateAction} from './actions/makeMealUpdateAction.js';
+import {enterSubscriptionsAction} from './actions/enterSubscriptionsAction.js';
+import {enterSubscriptionDetailAction} from './actions/enterSubscriptionDetailAction.js';
+import {createSubscriptionAction} from './actions/createSubscriptionAction.js';
+import {pauseSubscriptionAction} from './actions/pauseSubscriptionAction.js';
+import {resumeSubscriptionAction} from './actions/resumeSubscriptionAction.js';
+import {cancelSubscriptionAction} from './actions/cancelSubscriptionAction.js';
+import {enterSubscriptionCreateAction} from './actions/enterSubscriptionCreateAction.js';
+import {weeklyMenuUpdateState} from './actions/weeklyMenuUpdateState.js';
+import {weeklyMenuUpdateDateAction} from './actions/weeklyMenuUpdateDateAction.js';
 
 /**
  *
@@ -31,19 +33,23 @@ import {enterSubscriptionCreateAction} from './actions/enterSubscriptionCreateAc
  */
 export function createDispatcher(store, api) {
   return async function dispatch(action) {
-    console.log('Dispatch action: ' + action);
+    console.log('Dispatch action type: ' + action.type);
 
     switch (action.type) {
       case constants.ACTION_WEEKLY_MENU_CREATE:
         return weeklyMenuCreateAction({store});
       case constants.ACTION_WEEKLY_MENU_EDIT:
         return weeklyMenuEditAction({store, api, payload: action.payload});
+      case constants.ACTION_WEEKLY_MENU_UPDATE_STATE:
+        return weeklyMenuUpdateState({store, api, payload: action.payload});
+      case constants.ACTION_WEEKLY_MENU_UPDATE_DATE:
+        return weeklyMenuUpdateDateAction({store, api, payload: action.payload});
       case constants.ACTION_WEEKLY_MENU_LIST:
         return weeklyMenuListAction({store});
       case constants.ACTION_WEEKLY_MENU_DETAIL:
         return weeklyMenuDetailAction({store, api, payload: action.payload});
       case constants.ACTION_CURRENT_WEEKLY_MENU:
-        const payload = {weeklyMenuId: getMondayDateOfCurrentWeek()};
+        const payload = {weekStartId: getMondayDateOfCurrentWeek()};
         return currentWeeklyMenuAction({store, api, payload});
       case constants.ACTION_MAKE_WEEKLY_MENU_CREATE:
         return makeWeeklyMenuCreateAction({

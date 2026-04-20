@@ -34,6 +34,7 @@ export async function weeklyMenuDetailAction({store, api, payload}) {
     ...state,
     ui: {
       ...state.ui,
+      selectedWeekStartId: weeklyMenu.weekStartId,
       status: constants.LOADED,
     },
   }));

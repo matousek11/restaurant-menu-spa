@@ -1,10 +1,27 @@
 import * as constants from '../../constants.js';
+import {getMondayDateOfCurrentWeek} from '../helpers/dateManipulation.js';
 
 /**
  * Saves a new weekly menu.
  */
 export async function makeWeeklyMenuCreateAction({store, api, payload}) {
   const weeklyMenuId = payload.weeklyMenu.weekStartId;
+  const t = store.getTranslator();
+
+  if (weeklyMenuId < getMondayDateOfCurrentWeek()) {
+    store.setState((state) => ({
+      ...state,
+      ui: {
+        ...state.ui,
+        view: constants.ACTION_WEEKLY_MENU_CREATE,
+        status: constants.ERROR,
+        selectedWeekStartId: null,
+        errorMessage: t('weeklyMenuDateCannotBeInPast'),
+      },
+    }));
+    return;
+  }
+
   store.setState((state) => ({
     ...state,
     ui: {
@@ -16,7 +33,6 @@ export async function makeWeeklyMenuCreateAction({store, api, payload}) {
 
   const result = await api.weeklyMenu.addWeeklyMenu(payload.weeklyMenu);
   if (result === null) {
-    const t = store.getTranslator();
     store.setState((state) => ({
       ...state,
       ui: {
@@ -37,6 +53,7 @@ export async function makeWeeklyMenuCreateAction({store, api, payload}) {
       ...state.ui,
       view: constants.ACTION_WEEKLY_MENU_DETAIL,
       status: constants.LOADED,
+      selectedWeekStartId: result.weekStartId,
     },
   }));
 }
