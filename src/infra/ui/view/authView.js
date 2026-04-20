@@ -1,6 +1,6 @@
-import { AUTH_ROLE_GUEST, AUTH_ROLE_MANAGER, AUTH_ROLE_AUTHENTICATING } from '../../app/auth/authTransitions.js';
-import { ACTION_AUTH_LOGIN } from '../../app/actions/authLoginAction.js';
-import { ACTION_AUTH_LOGOUT } from '../../app/actions/authLogoutAction.js';
+import { AUTH_ROLE_GUEST, AUTH_ROLE_MANAGER, AUTH_ROLE_AUTHENTICATING } from '../../../app/auth/authTransitions.js';
+import { ACTION_AUTH_LOGIN } from '../../../app/actions/authLoginAction.js';
+import { ACTION_AUTH_LOGOUT } from '../../../app/actions/authLogoutAction.js';
 
 /**
  * Creates the login form DOM structure based on the Auth state.

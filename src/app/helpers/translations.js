@@ -21,6 +21,8 @@ export function createTranslator(getState, translations) {
   };
 }
 
+export const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
 export const translations = {
   cs: {
     currentWeeklyMenuNotFound:
@@ -31,6 +33,15 @@ export const translations = {
       'Týdenní menu nelze aktualizovat, protože neexistuje.',
     unableToDeleteNonExistentWeeklyMenu:
       'Týdenní menu nelze smazat, protože neexistuje.',
+    weeklyMenuDateCannotBeInPast:
+      'Datum začátku týdne nesmí být starší než pondělí aktuálního týdne.',
+    monday: 'Pondělí',
+    tuesday: 'Úterý',
+    wednesday: 'Středa',
+    thursday: 'Čtvrtek',
+    friday: 'Pátek',
+    saturday: 'Sobota',
+    sunday: 'Neděle',
   },
   en: {
     currentWeeklyMenuNotFound:
@@ -42,5 +53,14 @@ export const translations = {
       'Weekly menu cannot be updated because it does not exist.',
     unableToDeleteNonExistentWeeklyMenu:
       'Weekly menu cannot be deleted because it does not exist.',
+    weeklyMenuDateCannotBeInPast:
+      'Week start date cannot be earlier than the current week Monday.',
+    monday: 'Monday',
+    tuesday: 'Tuesday',
+    wednesday: 'Wednesday',
+    thursday: 'Thursday',
+    friday: 'Friday',
+    saturday: 'Saturday',
+    sunday: 'Sunday',
   },
 };

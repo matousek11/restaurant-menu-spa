@@ -1,7 +1,7 @@
-import {getWeeklyMenuApi} from './weeklyMenuApi';
-import {getAuthApi} from './authApi';
-import {getMealApi} from './mealApi';
-import {getSubscriptionApi} from './subscriptionApi';
+import {getWeeklyMenuApi} from './weeklyMenuApi.js';
+import {getAuthApi} from './authApi.js';
+import {getMealApi} from './mealApi.js';
+import {getSubscriptionApi} from './subscriptionApi.js';
 
 /**
  * @typedef {Object} MockApi

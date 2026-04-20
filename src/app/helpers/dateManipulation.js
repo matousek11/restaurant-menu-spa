@@ -1,3 +1,5 @@
+import {dayKeys} from './translations.js';
+
 /**
  * Calculates date of Monday of the current week
  *
@@ -18,4 +20,34 @@ export function getMondayDateOfCurrentWeek() {
   const dayOfMonth = String(monday.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${dayOfMonth}`;
+}
+
+/**
+ * Converts any date to Monday of the same week.
+ *
+ * @param {string} dateString date in YYYY-MM-DD format
+ * @returns {string} Monday date in YYYY-MM-DD format
+ */
+export function getMondayDateOfWeek(dateString) {
+  const [year, month, dayOfMonth] = dateString.split('-').map(Number);
+  const d = new Date(Date.UTC(year, month - 1, dayOfMonth));
+  const day = d.getUTCDay(); // 0 (Sun) - 6 (Sat)
+  const diff = day === 0 ? -6 : 1 - day;
+  d.setUTCDate(d.getUTCDate() + diff);
+
+  const mondayYear = d.getUTCFullYear();
+  const mondayMonth = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const mondayDay = String(d.getUTCDate()).padStart(2, '0');
+  return `${mondayYear}-${mondayMonth}-${mondayDay}`;
+}
+
+/**
+ * Gets the translation for a given day ID.
+ *
+ * @param {number} dayId id of the day
+ *
+ * @returns {string} translation for the given day ID
+ */
+export function getDayTranslation(dayId) {
+  return dayKeys[dayId];
 }
