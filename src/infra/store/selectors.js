@@ -11,6 +11,7 @@ import {
   ERROR,
   LOADED,
   LOADING,
+  VIEW_LOGIN,
   WEEKLY_MENU_DRAFT,
   WEEKLY_MENU_PUBLISHED,
 } from '../../constants.js';
@@ -149,6 +150,8 @@ function selectGuestView(state) {
         type: 'SUBSCRIPTION_CREATE',
         canCreate: canCreateSubscription(state),
       };
+    case VIEW_LOGIN:
+      return { type: VIEW_LOGIN };
     default:
       return {
         type: 'ERROR',
@@ -158,7 +161,56 @@ function selectGuestView(state) {
 }
 
 function selectManagerView(state) {
-  switch (state.ui.mode) {
+  console.log('[selectManagerView] view ->', state.ui.view);
+  switch (state.ui.view) {
+    case ACTION_CURRENT_WEEKLY_MENU:
+      const currentWeekId = getMondayDateOfCurrentWeek();
+      return {
+        weeklyMenu: state.weeklyMenus.find(
+          menu => menu.weekStartId === currentWeekId
+        ),
+        canDisplayStateChangeButtons: canDisplayStateChangeButtons,
+        canUpdateWeeklyMenu: canUpdateWeeklyMenu,
+      }
+
+    case ACTION_WEEKLY_MENU_DETAIL:
+      return {
+        weeklyMenu: state.weeklyMenus.find(
+          menu => menu.weekStartId === state.ui.selectedWeekStartId
+        ),
+        canDisplayStateChangeButtons: canDisplayStateChangeButtons,
+        canUpdateWeeklyMenu: canUpdateWeeklyMenu,
+      }
+
+    case ACTION_WEEKLY_MENU_UPDATE_STATE:
+      return {
+        weeklyMenu: state.weeklyMenus.find(
+          menu => menu.weekStartId === state.ui.selectedWeekStartId
+        )
+      }
+
+    case ACTION_WEEKLY_MENU_LIST:
+      return {
+        weeklyMenus: state.weeklyMenus,
+      }
+
+    case ACTION_WEEKLY_MENU_CREATE:
+      return {
+        weeklyMenu: {
+          weekStartId: getMondayDateOfCurrentWeek(),
+          state: WEEKLY_MENU_DRAFT,
+          days: Array.from({length: 7}, (_, dayId) => ({
+            dayId,
+            meals: [],
+          })),
+        },
+        canDisplayStateChangeButtons: (_, __) => false,
+        canUpdateWeeklyMenu: () => true,
+      }
+
+    case VIEW_LOGIN:
+      return { type: VIEW_LOGIN };
+
     case 'SUBSCRIPTION_LIST':
       return {
         type: 'SUBSCRIPTION_LIST',
@@ -197,6 +249,7 @@ export function selectViewState(state) {
       switch (state.auth.role) {
         case 'GUEST':
         case 'UNAUTHORIZED':
+        case 'AUTHENTICATING':
           return selectGuestView(state);
 
         case 'MANAGER':

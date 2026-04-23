@@ -3,6 +3,252 @@
   <head>
     <meta charset="UTF-8" />
     <title>Restaurant menu</title>
+    <style>
+      /* ===== User Status Header ===== */
+      .user-status-header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        background-color: #2c3e50;
+        color: #ecf0f1;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+      .user-status-text {
+        font-weight: 600;
+      }
+      .user-status-btn {
+        padding: 4px 12px;
+        border: 1px solid #ecf0f1;
+        border-radius: 4px;
+        background: transparent;
+        color: #ecf0f1;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      .user-status-btn:hover {
+        background-color: #ecf0f1;
+        color: #2c3e50;
+      }
+
+      /* ===== Auth Forms ===== */
+      .auth-login-container {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 24px;
+        font-family: sans-serif;
+      }
+      .auth-login-form {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 24px;
+        margin-top: 16px;
+      }
+      .auth-login-form h2 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #2c3e50;
+      }
+      .auth-label {
+        display: block;
+        margin-bottom: 12px;
+        color: #333;
+        font-weight: 500;
+      }
+      .auth-input {
+        display: block;
+        width: 100%;
+        margin-top: 4px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        box-sizing: border-box;
+      }
+      .auth-input:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+      .auth-error-message {
+        color: #e74c3c;
+        font-size: 13px;
+        margin-bottom: 8px;
+      }
+
+      /* ===== Auth Buttons ===== */
+      .auth-btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 8px;
+      }
+      .auth-btn-submit {
+        background-color: #3498db;
+        color: white;
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+      }
+      .auth-btn-submit:hover:not(:disabled) {
+        background-color: #2980b9;
+      }
+      .auth-btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .auth-btn-home {
+        background-color: #95a5a6;
+        color: white;
+      }
+      .auth-btn-home:hover {
+        background-color: #7f8c8d;
+      }
+      .auth-btn-logout {
+        background-color: #e74c3c;
+        color: white;
+      }
+      .auth-btn-logout:hover {
+        background-color: #c0392b;
+      }
+      .auth-btn-link {
+        background: none;
+        border: none;
+        color: #3498db;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: underline;
+        padding: 0;
+      }
+      .auth-btn-link:hover {
+        color: #2980b9;
+      }
+      .auth-switch-text {
+        margin-top: 16px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
+
+      /* ===== Nav Bar ===== */
+      .nav-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        padding: 8px 0;
+      }
+
+      /* ===== Day & Meal Display (Guest + Manager) ===== */
+      .day-container {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .day-no-meals {
+        color: #999;
+        font-style: italic;
+        font-size: 13px;
+        margin: 4px 0 4px 12px;
+      }
+      .meal-list {
+        list-style: none;
+        padding: 0;
+        margin: 4px 0 4px 12px;
+      }
+      .meal-item {
+        padding: 4px 0;
+        font-size: 14px;
+        color: #333;
+      }
+      .meal-name { font-weight: 600; }
+      .meal-price { color: #2c3e50; }
+      .meal-allergens { color: #888; font-size: 12px; }
+
+      /* ===== Meal Management (Manager Detail View) ===== */
+      .meal-management-section {
+        margin-top: 32px;
+        padding-top: 16px;
+        border-top: 2px solid #2c3e50;
+      }
+      .meal-management-section h2 {
+        color: #2c3e50;
+        margin-bottom: 16px;
+      }
+      .day-meal-panel {
+        margin-bottom: 20px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: #fafafa;
+      }
+      .day-meal-panel h3 {
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+        font-size: 15px;
+      }
+      .day-meal-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 8px 0;
+      }
+      .day-meal-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 8px;
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+      .meal-remove-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        padding: 2px 8px;
+        cursor: pointer;
+        font-size: 11px;
+      }
+      .meal-remove-btn:hover { background: #c0392b; }
+      .add-meal-form {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .meal-input {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 13px;
+        flex: 1;
+        min-width: 100px;
+      }
+      .meal-select {
+        padding: 6px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      .meal-add-btn {
+        padding: 6px 14px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .meal-add-btn:hover { background: #1e8449; }
+    </style>
   </head>
   <body>
     <div id="app"></div>

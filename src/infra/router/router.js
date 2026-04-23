@@ -4,6 +4,7 @@ import {
   ACTION_CURRENT_WEEKLY_MENU,
   ACTION_MAKE_WEEKLY_MENU_CREATE,
   ACTION_MAKE_WEEKLY_MENU_DELETE,
+  ACTION_SET_VIEW,
   ACTION_WEEKLY_MENU_CREATE,
   ACTION_WEEKLY_MENU_DETAIL,
   ACTION_WEEKLY_MENU_LIST,
@@ -13,6 +14,7 @@ import {
   VIEW_CURRENT_WEEKLY_MENU,
   VIEW_DELETE_WEEKLY_MENU,
   VIEW_DETAIL_WEEKLY_MENU,
+  VIEW_LOGIN,
   VIEW_WEEKLY_MENU_CHANGE_STATE,
   VIEW_WEEKLY_MENU_CREATE,
   VIEW_WEEKLY_MENU_CREATE_SAVE,
@@ -89,6 +91,11 @@ export function parsePath(path) {
     return { route: 'SUBSCRIPTION_DETAIL', subscriptionId: parts[1] };
   }
 
+  // /login
+  if (parts.length === 1 && parts[0] === 'login') {
+    return { route: VIEW_LOGIN };
+  }
+
   return { route: 'UNKNOWN' };
 }
 
@@ -148,6 +155,9 @@ export function routeToAction(parsed) {
         type: 'ACTION_ENTER_SUBSCRIPTION_DETAIL',
         payload: { subscriptionId: parsed.subscriptionId },
       };
+
+    case VIEW_LOGIN:
+      return { type: ACTION_SET_VIEW, payload: { view: VIEW_LOGIN } };
 
     default:
       return { type: 'ROUTE_NOT_FOUND' };
