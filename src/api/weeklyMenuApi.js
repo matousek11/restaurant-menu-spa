@@ -149,7 +149,19 @@ export function getWeeklyMenuApi(weeklyMenusStart, skipDelay = false) {
    * @returns {Promise<any | null>} added meal when added, null otherwise
    */
   async function addMealToWeeklyMenu(weeklyMenuId, dayId, meal) {
-    // TODO: Add when meal structure is ready
+    await delay();
+    const menu = liveWeeklyMenus.find(m => m.weekStartId === weeklyMenuId);
+    if (!menu) return null;
+
+    // Find or create the day entry
+    let day = menu.days.find(d => d.dayId === dayId);
+    if (!day) {
+      day = { dayId, meals: [] };
+      menu.days.push(day);
+    }
+
+    day.meals.push(meal);
+    return structuredClone(meal);
   }
 
   /**
@@ -173,7 +185,16 @@ export function getWeeklyMenuApi(weeklyMenusStart, skipDelay = false) {
    * @returns {Promise<boolean>} true when meal removed, false otherwise
    */
   async function removeMealFromWeeklyMenu(weeklyMenuId, dayId, mealId) {
-    // TODO: Add when meal structure is ready
+    await delay();
+    const menu = liveWeeklyMenus.find(m => m.weekStartId === weeklyMenuId);
+    if (!menu) return false;
+
+    const day = menu.days.find(d => d.dayId === dayId);
+    if (!day) return false;
+
+    const lengthBefore = day.meals.length;
+    day.meals = day.meals.filter(m => m.id !== mealId);
+    return day.meals.length !== lengthBefore;
   }
 
   function delay(ms = 400) {

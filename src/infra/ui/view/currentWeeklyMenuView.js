@@ -1,18 +1,49 @@
 import {createButton} from '../ui-components/button.js';
 import {createWeek} from '../ui-components/week.js';
+import {AUTH_ROLE_MANAGER} from '../../../app/auth/authTransitions.js';
+import {ACTION_AUTH_LOGOUT} from '../../../app/actions/authLogoutAction.js';
 
-export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeButtons) {
+/**
+ * Renders the current weekly menu view.
+ * GUEST sees: Login button + published menu (no management tools).
+ * MANAGER sees: Logout button + Admin button + menu with management tools.
+ *
+ * @param {Object} currentWeeklyMenu - the weekly menu data
+ * @param {Function} canDisplayStateChangeButtons - permission check
+ * @param {Object} authState - current auth state
+ * @param {Function} dispatch - the dispatcher function
+ * @returns {HTMLElement}
+ */
+export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeButtons, authState, dispatch) {
     const root = document.createElement("div");
 
-    const loginButton = createButton(
-      'Login', () => console.log('Login')
-    );
-    root.appendChild(loginButton);
+    const navBar = document.createElement('div');
+    navBar.className = 'nav-bar';
 
-    const adminButton = createButton(
-      'Admin', () => window.location.hash = '#/weekly-menu'
-    );
-    root.appendChild(adminButton);
+    if (authState.role === AUTH_ROLE_MANAGER) {
+        // MANAGER: show Logout + Admin panel link
+        const logoutButton = createButton(
+          'Logout', () => dispatch({ type: ACTION_AUTH_LOGOUT })
+        );
+        logoutButton.id = 'nav-logout-btn';
+        logoutButton.className = 'auth-btn auth-btn-logout';
+        navBar.appendChild(logoutButton);
+
+        const adminButton = createButton(
+          'Admin Panel', () => window.location.hash = '#/weekly-menu'
+        );
+        adminButton.id = 'nav-admin-btn';
+        navBar.appendChild(adminButton);
+    } else {
+        // GUEST: show only Login button
+        const loginButton = createButton(
+          'Login', () => window.location.hash = '#/login'
+        );
+        loginButton.id = 'nav-login-btn';
+        navBar.appendChild(loginButton);
+    }
+
+    root.appendChild(navBar);
 
     const weeklyMenu = createWeek(currentWeeklyMenu, canDisplayStateChangeButtons);
     root.appendChild(weeklyMenu);

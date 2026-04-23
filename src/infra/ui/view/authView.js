@@ -13,20 +13,12 @@ export function renderLoginForm(dispatch, authState) {
   const container = document.createElement('div');
   container.className = 'auth-login-container';
 
-  if (authState.role === AUTH_ROLE_MANAGER) {
-    const messages = document.createElement('p');
-    messages.textContent = 'You are already logged in.';
-    container.appendChild(messages);
-    
-    const logoutBtn = document.createElement('button');
-    logoutBtn.textContent = 'Logout';
-    logoutBtn.onclick = (e) => {
-      e.preventDefault();
-      dispatch({ type: ACTION_AUTH_LOGOUT }); 
-    };
-    container.appendChild(logoutBtn);
-    return container;
-  }
+  // Home button
+  const homeBtn = document.createElement('button');
+  homeBtn.textContent = '← Home';
+  homeBtn.className = 'auth-btn auth-btn-home';
+  homeBtn.onclick = () => window.location.hash = '#/';
+  container.appendChild(homeBtn);
 
   const form = document.createElement('form');
   form.className = 'auth-login-form';
@@ -37,7 +29,7 @@ export function renderLoginForm(dispatch, authState) {
 
   const errorDiv = document.createElement('div');
   errorDiv.className = 'auth-error-message';
-  errorDiv.style.color = 'red';
+  errorDiv.style.color = '#e74c3c';
   errorDiv.style.minHeight = '20px';
   if (authState.error) {
     errorDiv.textContent = authState.error;
@@ -46,28 +38,34 @@ export function renderLoginForm(dispatch, authState) {
 
   const usernameLabel = document.createElement('label');
   usernameLabel.textContent = 'Username: ';
-  usernameLabel.style.display = 'block';
-  usernameLabel.style.marginBottom = '10px';
+  usernameLabel.className = 'auth-label';
   const usernameInput = document.createElement('input');
   usernameInput.type = 'text';
   usernameInput.name = 'username';
+  usernameInput.id = 'login-username';
+  usernameInput.className = 'auth-input';
+  usernameInput.placeholder = 'Enter username';
   usernameInput.required = true;
   usernameLabel.appendChild(usernameInput);
   form.appendChild(usernameLabel);
 
   const passwordLabel = document.createElement('label');
   passwordLabel.textContent = 'Password: ';
-  passwordLabel.style.display = 'block';
-  passwordLabel.style.marginBottom = '10px';
+  passwordLabel.className = 'auth-label';
   const passwordInput = document.createElement('input');
   passwordInput.type = 'password';
   passwordInput.name = 'password';
+  passwordInput.id = 'login-password';
+  passwordInput.className = 'auth-input';
+  passwordInput.placeholder = 'Enter password';
   passwordInput.required = true;
   passwordLabel.appendChild(passwordInput);
   form.appendChild(passwordLabel);
 
   const submitButton = document.createElement('button');
   submitButton.type = 'submit';
+  submitButton.id = 'login-submit';
+  submitButton.className = 'auth-btn auth-btn-submit';
   submitButton.textContent = authState.role === AUTH_ROLE_AUTHENTICATING ? 'Logging in...' : 'Login';
   if (authState.role === AUTH_ROLE_AUTHENTICATING) {
     submitButton.disabled = true;
@@ -88,6 +86,7 @@ export function renderLoginForm(dispatch, authState) {
   });
 
   container.appendChild(form);
+
   return container;
 }
 

@@ -1,4 +1,5 @@
 import { loginRequest, loginSuccess, loginFailure } from '../auth/authTransitions.js';
+import * as constants from '../../constants.js';
 
 export const ACTION_AUTH_LOGIN = 'ACTION_AUTH_LOGIN';
 
@@ -17,7 +18,11 @@ export async function authLoginAction({ store, api, payload }) {
     if (response.status === 200) {
       store.setState((state) => ({
         ...state,
-        auth: loginSuccess(state.auth, response.token)
+        auth: loginSuccess(state.auth, response.token),
+        ui: {
+          ...state.ui,
+          view: constants.ACTION_WEEKLY_MENU_LIST,
+        }
       }));
     } else {
       throw new Error('Unexpected response status');

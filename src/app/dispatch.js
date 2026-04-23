@@ -24,6 +24,11 @@ import {cancelSubscriptionAction} from './actions/cancelSubscriptionAction.js';
 import {enterSubscriptionCreateAction} from './actions/enterSubscriptionCreateAction.js';
 import {weeklyMenuUpdateState} from './actions/weeklyMenuUpdateState.js';
 import {weeklyMenuUpdateDateAction} from './actions/weeklyMenuUpdateDateAction.js';
+import {setViewAction} from './actions/setViewAction.js';
+import {authLoginAction} from './actions/authLoginAction.js';
+import {authLogoutAction} from './actions/authLogoutAction.js';
+import {addMealToMenuAction} from './actions/addMealToMenuAction.js';
+import {removeMealFromMenuAction} from './actions/removeMealFromMenuAction.js';
 
 /**
  *
@@ -94,8 +99,21 @@ export function createDispatcher(store, api) {
       case constants.ACTION_CANCEL_SUBSCRIPTION:
         return cancelSubscriptionAction({store, api, payload: action.payload});
 
+      // Auth actions
+      case constants.ACTION_SET_VIEW:
+        return setViewAction({store, payload: action.payload});
+      case 'ACTION_AUTH_LOGIN':
+        return authLoginAction({store, api, payload: action.payload});
+      case 'ACTION_AUTH_LOGOUT':
+        return authLogoutAction({store, api});
+
+      case constants.ACTION_ADD_MEAL_TO_MENU:
+        return addMealToMenuAction({store, api, payload: action.payload});
+      case constants.ACTION_REMOVE_MEAL_FROM_MENU:
+        return removeMealFromMenuAction({store, api, payload: action.payload});
+
       default:
-        console.error('Unknown action: ' + action);
+        console.error('Unknown action: ' + action.type);
     }
   };
 }
