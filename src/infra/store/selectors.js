@@ -93,42 +93,6 @@ function selectGuestView(state) {
         canDisplayStateChangeButtons: (_, __) => false,
       }
 
-    case ACTION_WEEKLY_MENU_DETAIL:
-      return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === state.ui.selectedWeekStartId
-        ),
-        canDisplayStateChangeButtons: canDisplayStateChangeButtons,
-        canUpdateWeeklyMenu: canUpdateWeeklyMenu,
-      }
-
-    case ACTION_WEEKLY_MENU_UPDATE_STATE:
-      return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === state.ui.selectedWeekStartId
-        )
-      }
-
-    case ACTION_WEEKLY_MENU_LIST:
-      return {
-        weeklyMenus: state.weeklyMenus,
-      }
-
-    case ACTION_WEEKLY_MENU_CREATE:
-      return {
-        weeklyMenu: {
-          weekStartId: getMondayDateOfCurrentWeek(),
-          state: WEEKLY_MENU_DRAFT,
-          days: Array.from({length: 7}, (_, dayId) => ({
-            dayId,
-            meals: [],
-          })),
-        },
-        canDisplayStateChangeButtons: (_, __) => false,
-        canUpdateWeeklyMenu: () => true,
-      }
-
-
     case 'SUBSCRIPTION_LIST':
       return {
         type: 'SUBSCRIPTION_LIST',
