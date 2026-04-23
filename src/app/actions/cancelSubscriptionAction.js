@@ -1,5 +1,7 @@
 // src/app/actions/cancelSubscriptionAction.js
 
+import { LOADED } from '../../constants.js';
+
 export async function cancelSubscriptionAction({ store, api, payload }) {
   const { subscriptionId } = payload;
 
@@ -16,7 +18,7 @@ export async function cancelSubscriptionAction({ store, api, payload }) {
       subscriptions: state.subscriptions.map((s) =>
         s.id === subscription.id ? subscription : s,
       ),
-      ui: { ...state.ui, status: 'READY', errorMessage: null },
+      ui: { ...state.ui, status: LOADED, errorMessage: null },
     }));
   } catch (error) {
     store.setState((state) => ({

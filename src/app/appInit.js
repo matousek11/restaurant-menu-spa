@@ -3,15 +3,17 @@ import {logout} from './auth/authTransitions.js';
 
 export async function appInit(store, api) {
   try {
-    const [weeklyMenus, meals] = await Promise.all([
+    const [weeklyMenus, meals, subscriptions] = await Promise.all([
       api.weeklyMenu.getWeeklyMenus(),
       api.meal.getMeals(),
+      api.subscription.getSubscriptions(),
     ]);
 
     store.setState((state) => ({
       ...state,
       weeklyMenus,
       meals,
+      subscriptions,
       ui: {
         ...state.ui,
         status: constants.LOADED,

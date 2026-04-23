@@ -4,6 +4,9 @@ import {selectViewState} from '../store/selectors.js';
 import {weeklyMenuListView} from './view/weeklyMenuListView.js';
 import {weeklyMenuDetailView} from './view/weeklyMenuDetailView.js';
 import {weeklyMenuCreateView} from './view/weeklyMenuCreateView.js';
+import {subscriptionListView} from './view/subscriptionListView.js';
+import {subscriptionDetailView} from './view/subscriptionDetailView.js';
+import {subscriptionCreateView} from './view/subscriptionCreateView.js';
 import {renderLoginForm} from './view/authView.js';
 import {AUTH_ROLE_MANAGER} from '../../app/auth/authTransitions.js';
 import {ACTION_AUTH_LOGOUT} from '../../app/actions/authLogoutAction.js';
@@ -24,6 +27,15 @@ function createUserStatusHeader(authState, dispatch) {
     statusText.className = 'user-status-text';
     statusText.id = 'user-status-text';
 
+    const subscriptionsBtn = document.createElement('button');
+    subscriptionsBtn.textContent = 'Moje předplatná';
+    subscriptionsBtn.className = 'user-status-btn';
+    subscriptionsBtn.id = 'header-subscriptions-btn';
+    subscriptionsBtn.onclick = (e) => {
+        e.preventDefault();
+        window.location.hash = '#/subscriptions';
+    };
+
     if (authState.role === AUTH_ROLE_MANAGER) {
         statusText.textContent = `Manager: ${authState.token ? authState.token.replace('mock-jwt-token-', '') : 'admin'}`;
 
@@ -37,10 +49,12 @@ function createUserStatusHeader(authState, dispatch) {
         };
 
         header.appendChild(statusText);
+        header.appendChild(subscriptionsBtn);
         header.appendChild(logoutBtn);
     } else {
         statusText.textContent = 'Guest';
         header.appendChild(statusText);
+        header.appendChild(subscriptionsBtn);
     }
 
     return header;
@@ -76,6 +90,20 @@ export function render(root, state, dispatch) {
     if (viewState.type === constants.VIEW_LOGIN) {
         const loginView = renderLoginForm(dispatch, state.auth);
         root.appendChild(loginView);
+        return;
+    }
+
+    // Subscription views — dispatched by viewState.type (set by selectors)
+    if (viewState.type === constants.ACTION_ENTER_SUBSCRIPTIONS) {
+        root.appendChild(subscriptionListView(viewState));
+        return;
+    }
+    if (viewState.type === constants.ACTION_ENTER_SUBSCRIPTION_DETAIL) {
+        root.appendChild(subscriptionDetailView(viewState, dispatch));
+        return;
+    }
+    if (viewState.type === constants.ACTION_ENTER_SUBSCRIPTION_CREATE) {
+        root.appendChild(subscriptionCreateView(viewState, dispatch));
         return;
     }
 
