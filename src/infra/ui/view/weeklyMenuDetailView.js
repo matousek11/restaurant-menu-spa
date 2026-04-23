@@ -29,6 +29,7 @@ export function weeklyMenuDetailView(weeklyMenu, canDisplayStateChangeButtons, c
     null,
     (originalWeekStartId, updatedWeekStartId) =>
       `#/weekly-menu-date/${encodeURIComponent(originalWeekStartId)}/${encodeURIComponent(updatedWeekStartId)}`,
+    true, // skipDaysList — days are managed via the Správa jídel section below
   );
   root.appendChild(weeklyMenuRender);
 
