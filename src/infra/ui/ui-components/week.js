@@ -1,8 +1,8 @@
-import {createHeader} from './header.js';
-import {createDay} from './day.js';
-import {createParagraph} from './paragraph.js';
-import {createButton} from './button.js';
-import {getMondayDateOfWeek} from '../../../app/helpers/dateManipulation.js';
+import { createHeader } from './header.js';
+import { createDay } from './day.js';
+import { createParagraph } from './paragraph.js';
+import { createButton } from './button.js';
+import { getMondayDateOfWeek } from '../../../app/helpers/dateManipulation.js';
 import {
     WEEKLY_MENU_ARCHIVED,
     WEEKLY_MENU_DRAFT,
@@ -18,12 +18,13 @@ import {
  * @returns {HTMLDivElement} created week element.
  */
 export function createWeek(
-  week,
-  canDisplayStateChangeButtons,
-  canUpdateWeeklyMenu = () => false,
-  canShowAdminDetail = false,
-  buildSaveRoute = null,
-  buildDateChangeRoute = null,
+    week,
+    canDisplayStateChangeButtons,
+    canUpdateWeeklyMenu = () => false,
+    canShowAdminDetail = false,
+    buildSaveRoute = null,
+    buildDateChangeRoute = null,
+    skipDaysList = false,
 ) {
     const weekElement = document.createElement('div');
     if (week === undefined) {
@@ -79,7 +80,7 @@ export function createWeek(
         dateInput.type = 'date';
         dateInput.name = 'weekStartId';
         if (week.weekStartId) {
-          dateInput.value = getMondayDateOfWeek(week.weekStartId);
+            dateInput.value = getMondayDateOfWeek(week.weekStartId);
         }
         if (buildDateChangeRoute !== null) {
             dateInput.addEventListener('change', (event) => {
@@ -90,8 +91,8 @@ export function createWeek(
                 const normalizedWeekStartId = getMondayDateOfWeek(updatedWeekStartId);
                 dateInput.value = normalizedWeekStartId;
                 window.location.hash = buildDateChangeRoute(
-                  week.weekStartId,
-                  normalizedWeekStartId,
+                    week.weekStartId,
+                    normalizedWeekStartId,
                 );
             });
         }
@@ -102,28 +103,30 @@ export function createWeek(
 
         if (buildSaveRoute !== null) {
             weekElement.appendChild(
-              createButton('Uložit změnu', () => {
-                  const currentDateValue = getMondayDateOfWeek(
-                    dateInput.value || week.weekStartId,
-                  );
-                  dateInput.value = currentDateValue;
-                  window.location.hash = buildSaveRoute(
-                    week.weekStartId,
-                    currentDateValue,
-                  );
-              }),
+                createButton('Uložit změnu', () => {
+                    const currentDateValue = getMondayDateOfWeek(
+                        dateInput.value || week.weekStartId,
+                    );
+                    dateInput.value = currentDateValue;
+                    window.location.hash = buildSaveRoute(
+                        week.weekStartId,
+                        currentDateValue,
+                    );
+                }),
             );
         }
     }
 
-    for (let i = 0; i < 7; i++) {
-        const day = week.days.find((day) => day.dayId === i);
-        if (day) {
-            weekElement.append(createDay(day));
-            continue;
-        }
+    if (!skipDaysList) {
+        for (let i = 0; i < 7; i++) {
+            const day = week.days.find((day) => day.dayId === i);
+            if (day) {
+                weekElement.append(createDay(day));
+                continue;
+            }
 
-        weekElement.append(createDay({dayId: i, meals: []}));
+            weekElement.append(createDay({ dayId: i, meals: [] }));
+        }
     }
 
     return weekElement;
