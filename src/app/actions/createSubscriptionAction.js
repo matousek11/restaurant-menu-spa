@@ -1,5 +1,7 @@
 // src/app/actions/createSubscriptionAction.js
 
+import { ACTION_ENTER_SUBSCRIPTION_DETAIL, LOADED } from '../../constants.js';
+
 export async function createSubscriptionAction({ store, api, payload }) {
   const { weekStartId, totalDays } = payload;
   const state = store.getState();
@@ -18,9 +20,9 @@ export async function createSubscriptionAction({ store, api, payload }) {
       subscriptions: [...state.subscriptions, subscription],
       ui: {
         ...state.ui,
-        status: 'READY',
+        status: LOADED,
         errorMessage: null,
-        mode: 'SUBSCRIPTION_DETAIL',
+        view: ACTION_ENTER_SUBSCRIPTION_DETAIL,
         selectedSubscriptionId: subscription.id,
       },
     }));

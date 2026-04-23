@@ -2,6 +2,9 @@
 
 import {
   ACTION_CURRENT_WEEKLY_MENU,
+  ACTION_ENTER_SUBSCRIPTIONS,
+  ACTION_ENTER_SUBSCRIPTION_CREATE,
+  ACTION_ENTER_SUBSCRIPTION_DETAIL,
   ACTION_MAKE_WEEKLY_MENU_CREATE,
   ACTION_MAKE_WEEKLY_MENU_DELETE,
   ACTION_SET_VIEW,
@@ -78,17 +81,17 @@ export function parsePath(path) {
 
   // /subscriptions
   if (parts.length === 1 && parts[0] === 'subscriptions') {
-    return { route: 'SUBSCRIPTIONS' };
+    return { route: ACTION_ENTER_SUBSCRIPTIONS };
   }
 
   // /subscriptions/create
   if (parts.length === 2 && parts[0] === 'subscriptions' && parts[1] === 'create') {
-    return { route: 'SUBSCRIPTION_CREATE' };
+    return { route: ACTION_ENTER_SUBSCRIPTION_CREATE };
   }
 
   // /subscriptions/:id
   if (parts.length === 2 && parts[0] === 'subscriptions') {
-    return { route: 'SUBSCRIPTION_DETAIL', subscriptionId: parts[1] };
+    return { route: ACTION_ENTER_SUBSCRIPTION_DETAIL, subscriptionId: parts[1] };
   }
 
   // /login
@@ -144,15 +147,15 @@ export function routeToAction(parsed) {
     case VIEW_DELETE_WEEKLY_MENU:
       return {type: ACTION_MAKE_WEEKLY_MENU_DELETE, payload: {weekStartId: parsed.weeklyMenuId}};
 
-    case 'SUBSCRIPTIONS':
-      return { type: 'ACTION_ENTER_SUBSCRIPTIONS' };
+    case ACTION_ENTER_SUBSCRIPTIONS:
+      return { type: ACTION_ENTER_SUBSCRIPTIONS };
 
-    case 'SUBSCRIPTION_CREATE':
-      return { type: 'ACTION_ENTER_SUBSCRIPTION_CREATE' };
+    case ACTION_ENTER_SUBSCRIPTION_CREATE:
+      return { type: ACTION_ENTER_SUBSCRIPTION_CREATE };
 
-    case 'SUBSCRIPTION_DETAIL':
+    case ACTION_ENTER_SUBSCRIPTION_DETAIL:
       return {
-        type: 'ACTION_ENTER_SUBSCRIPTION_DETAIL',
+        type: ACTION_ENTER_SUBSCRIPTION_DETAIL,
         payload: { subscriptionId: parsed.subscriptionId },
       };
 

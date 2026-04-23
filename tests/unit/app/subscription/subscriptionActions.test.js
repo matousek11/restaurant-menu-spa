@@ -10,6 +10,11 @@ import { pauseSubscriptionAction } from '../../../../src/app/actions/pauseSubscr
 import { resumeSubscriptionAction } from '../../../../src/app/actions/resumeSubscriptionAction.js';
 import { cancelSubscriptionAction } from '../../../../src/app/actions/cancelSubscriptionAction.js';
 import { SUBSCRIPTION_ACTIVE, SUBSCRIPTION_PAUSED, SUBSCRIPTION_CANCELLED } from '../../../../src/app/subscription/subscriptionTransitions.js';
+import {
+  ACTION_ENTER_SUBSCRIPTIONS,
+  ACTION_ENTER_SUBSCRIPTION_DETAIL,
+  ACTION_ENTER_SUBSCRIPTION_CREATE,
+} from '../../../../src/constants.js';
 
 const seedSubscription = {
   id: 'sub-1',
@@ -30,38 +35,38 @@ function createTestSetup(seed = []) {
 }
 
 describe('enterSubscriptionsAction', () => {
-  it('nastaví mode na SUBSCRIPTION_LIST', () => {
+  it('nastaví view na SUBSCRIPTION_LIST', () => {
     const { store } = createTestSetup();
 
     enterSubscriptionsAction({ store });
 
     const state = store.getState();
-    expect(state.ui.mode).toBe('SUBSCRIPTION_LIST');
+    expect(state.ui.view).toBe(ACTION_ENTER_SUBSCRIPTIONS);
     expect(state.ui.selectedSubscriptionId).toBeNull();
-    expect(state.ui.status).toBe('READY');
+    expect(state.ui.status).toBe('LOADED');
   });
 });
 
 describe('enterSubscriptionDetailAction', () => {
-  it('nastaví mode na SUBSCRIPTION_DETAIL a uloží id', () => {
+  it('nastaví view na SUBSCRIPTION_DETAIL a uloží id', () => {
     const { store } = createTestSetup();
 
     enterSubscriptionDetailAction({ store, payload: { subscriptionId: 'sub-1' } });
 
     const state = store.getState();
-    expect(state.ui.mode).toBe('SUBSCRIPTION_DETAIL');
+    expect(state.ui.view).toBe(ACTION_ENTER_SUBSCRIPTION_DETAIL);
     expect(state.ui.selectedSubscriptionId).toBe('sub-1');
   });
 });
 
 describe('enterSubscriptionCreateAction', () => {
-  it('nastaví mode na SUBSCRIPTION_CREATE', () => {
+  it('nastaví view na SUBSCRIPTION_CREATE', () => {
     const { store } = createTestSetup();
 
     enterSubscriptionCreateAction({ store });
 
     const state = store.getState();
-    expect(state.ui.mode).toBe('SUBSCRIPTION_CREATE');
+    expect(state.ui.view).toBe(ACTION_ENTER_SUBSCRIPTION_CREATE);
     expect(state.ui.selectedSubscriptionId).toBeNull();
   });
 });
@@ -75,8 +80,8 @@ describe('createSubscriptionAction', () => {
     const state = store.getState();
     expect(state.subscriptions).toHaveLength(1);
     expect(state.subscriptions[0].status).toBe(SUBSCRIPTION_ACTIVE);
-    expect(state.ui.status).toBe('READY');
-    expect(state.ui.mode).toBe('SUBSCRIPTION_DETAIL');
+    expect(state.ui.status).toBe('LOADED');
+    expect(state.ui.view).toBe(ACTION_ENTER_SUBSCRIPTION_DETAIL);
   });
 
   it('nastaví ERROR pokud zákazník již má aktivní předplatné', async () => {
@@ -99,7 +104,7 @@ describe('pauseSubscriptionAction', () => {
 
     const state = store.getState();
     expect(state.subscriptions[0].status).toBe(SUBSCRIPTION_PAUSED);
-    expect(state.ui.status).toBe('READY');
+    expect(state.ui.status).toBe('LOADED');
   });
 
   it('nastaví ERROR při pokusu pozastavit neexistující předplatné', async () => {
@@ -122,7 +127,7 @@ describe('resumeSubscriptionAction', () => {
 
     const state = store.getState();
     expect(state.subscriptions[0].status).toBe(SUBSCRIPTION_ACTIVE);
-    expect(state.ui.status).toBe('READY');
+    expect(state.ui.status).toBe('LOADED');
   });
 });
 
@@ -135,7 +140,7 @@ describe('cancelSubscriptionAction', () => {
 
     const state = store.getState();
     expect(state.subscriptions[0].status).toBe(SUBSCRIPTION_CANCELLED);
-    expect(state.ui.status).toBe('READY');
+    expect(state.ui.status).toBe('LOADED');
   });
 
   it('nastaví ERROR při pokusu zrušit již zrušené předplatné', async () => {
