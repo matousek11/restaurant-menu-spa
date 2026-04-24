@@ -136,6 +136,7 @@ function selectManagerView(state) {
         weeklyMenu: state.weeklyMenus.find(
           menu => menu.weekStartId === state.ui.selectedWeekStartId
         ),
+        meals: state.meals,
         canDisplayStateChangeButtons: canDisplayStateChangeButtons,
         canUpdateWeeklyMenu: canUpdateWeeklyMenu,
       }
