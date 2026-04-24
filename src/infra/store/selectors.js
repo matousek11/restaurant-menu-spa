@@ -4,6 +4,9 @@
 import { SUBSCRIPTION_ACTIVE, SUBSCRIPTION_PAUSED } from '../../app/subscription/subscriptionTransitions.js';
 import {
   ACTION_CURRENT_WEEKLY_MENU,
+  ACTION_ENTER_SUBSCRIPTIONS,
+  ACTION_ENTER_SUBSCRIPTION_CREATE,
+  ACTION_ENTER_SUBSCRIPTION_DETAIL,
   ACTION_WEEKLY_MENU_CREATE,
   ACTION_WEEKLY_MENU_DETAIL,
   ACTION_WEEKLY_MENU_LIST,
@@ -52,26 +55,26 @@ export function selectActiveSubscription(state) {
 // ==================
 
 export function canCreateSubscription(state) {
-  if (state.ui.status !== 'READY') return false;
+  if (state.ui.status !== LOADED) return false;
   return selectActiveSubscription(state) === null;
 }
 
 export function canPauseSubscription(state) {
-  if (state.ui.status !== 'READY') return false;
+  if (state.ui.status !== LOADED) return false;
   const subscription = selectSubscriptionById(state);
   if (!subscription) return false;
   return subscription.status === SUBSCRIPTION_ACTIVE;
 }
 
 export function canResumeSubscription(state) {
-  if (state.ui.status !== 'READY') return false;
+  if (state.ui.status !== LOADED) return false;
   const subscription = selectSubscriptionById(state);
   if (!subscription) return false;
   return subscription.status === SUBSCRIPTION_PAUSED;
 }
 
 export function canCancelSubscription(state) {
-  if (state.ui.status !== 'READY') return false;
+  if (state.ui.status !== LOADED) return false;
   const subscription = selectSubscriptionById(state);
   if (!subscription) return false;
   return (
@@ -97,25 +100,25 @@ function selectGuestView(state) {
         canDisplayStateChangeButtons: (_, __) => false,
       }
 
-    case 'SUBSCRIPTION_LIST':
+    case ACTION_ENTER_SUBSCRIPTIONS:
       return {
-        type: 'SUBSCRIPTION_LIST',
+        type: ACTION_ENTER_SUBSCRIPTIONS,
         subscriptions: selectSubscriptions(state).filter(
           (s) => s.userId === state.currentUser.userId,
         ),
         canCreate: canCreateSubscription(state),
       };
-    case 'SUBSCRIPTION_DETAIL':
+    case ACTION_ENTER_SUBSCRIPTION_DETAIL:
       return {
-        type: 'SUBSCRIPTION_DETAIL',
+        type: ACTION_ENTER_SUBSCRIPTION_DETAIL,
         subscription: selectSubscriptionById(state),
         canPause: canPauseSubscription(state),
         canResume: canResumeSubscription(state),
         canCancel: canCancelSubscription(state),
       };
-    case 'SUBSCRIPTION_CREATE':
+    case ACTION_ENTER_SUBSCRIPTION_CREATE:
       return {
-        type: 'SUBSCRIPTION_CREATE',
+        type: ACTION_ENTER_SUBSCRIPTION_CREATE,
         canCreate: canCreateSubscription(state),
       };
     case VIEW_LOGIN:
@@ -123,7 +126,7 @@ function selectGuestView(state) {
     default:
       return {
         type: 'ERROR',
-        message: `Guest role — neznámý mode: ${state.ui.mode}`,
+        message: `Guest role — neznámý view: ${state.ui.view}`,
       };
   }
 }
@@ -179,19 +182,24 @@ function selectManagerView(state) {
     case VIEW_LOGIN:
       return { type: VIEW_LOGIN };
 
-    case 'SUBSCRIPTION_LIST':
+    case ACTION_ENTER_SUBSCRIPTIONS:
       return {
-        type: 'SUBSCRIPTION_LIST',
+        type: ACTION_ENTER_SUBSCRIPTIONS,
         subscriptions: selectSubscriptions(state),
-        canCreate: false,
+        canCreate: canCreateSubscription(state),
       };
-    case 'SUBSCRIPTION_DETAIL':
+    case ACTION_ENTER_SUBSCRIPTION_DETAIL:
       return {
-        type: 'SUBSCRIPTION_DETAIL',
+        type: ACTION_ENTER_SUBSCRIPTION_DETAIL,
         subscription: selectSubscriptionById(state),
         canPause: canPauseSubscription(state),
         canResume: canResumeSubscription(state),
         canCancel: canCancelSubscription(state),
+      };
+    case ACTION_ENTER_SUBSCRIPTION_CREATE:
+      return {
+        type: ACTION_ENTER_SUBSCRIPTION_CREATE,
+        canCreate: canCreateSubscription(state),
       };
 
     case ACTION_MEAL_LIST:
@@ -204,11 +212,10 @@ function selectManagerView(state) {
 
     case ACTION_MEAL_DETAIL:
       return { meal: state.meals.find((m) => m.id === state.ui.selectedMealId) ?? null };
-
     default:
       return {
         type: 'ERROR',
-        message: `Manager role — neznámý mode: ${state.ui.mode}`,
+        message: `Manager role — neznámý view: ${state.ui.view}`,
       };
   }
 }
