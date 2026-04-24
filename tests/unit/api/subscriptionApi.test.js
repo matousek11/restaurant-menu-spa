@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getSubscriptionApi } from '../../../src/api/subscriptionApi.js';
-import { SUBSCRIPTION_ACTIVE, SUBSCRIPTION_PAUSED, SUBSCRIPTION_CANCELLED } from '../../../src/app/subscription/subscriptionTransitions.js';
+import { SUBSCRIPTION_ACTIVE, SUBSCRIPTION_PAUSED, SUBSCRIPTION_CANCELLED, SUBSCRIPTION_EXPIRED } from '../../../src/app/subscription/subscriptionTransitions.js';
 
 const seedSubscription = {
   id: 'sub-1',
@@ -124,6 +124,16 @@ describe('subscriptionApi — decrementSubscriptionDay', () => {
 
     expect(result.remainingDays).toBe(19);
     expect(result.status).toBe(SUBSCRIPTION_ACTIVE);
+  });
+
+  it('přepne na EXPIRED pokud remainingDays dosáhne 0', async () => {
+    const lastDaySeed = { ...seedSubscription, remainingDays: 1 };
+    const api = getTestApi([lastDaySeed]);
+
+    const result = await api.decrementSubscriptionDay('sub-1');
+
+    expect(result.remainingDays).toBe(0);
+    expect(result.status).toBe(SUBSCRIPTION_EXPIRED);
   });
 
   it('vyhodí chybu pokud předplatné není ACTIVE', async () => {

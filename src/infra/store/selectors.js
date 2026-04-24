@@ -50,6 +50,10 @@ export function selectActiveSubscription(state) {
   );
 }
 
+export function selectPublishedWeeklyMenus(state) {
+  return (state.weeklyMenus ?? []).filter((m) => m.state === WEEKLY_MENU_PUBLISHED);
+}
+
 // ==================
 // Odvozené hodnoty pro UI
 // ==================
@@ -120,6 +124,7 @@ function selectGuestView(state) {
       return {
         type: ACTION_ENTER_SUBSCRIPTION_CREATE,
         canCreate: canCreateSubscription(state),
+        publishedWeeklyMenus: selectPublishedWeeklyMenus(state),
       };
     case VIEW_LOGIN:
       return { type: VIEW_LOGIN };
@@ -200,6 +205,7 @@ function selectManagerView(state) {
       return {
         type: ACTION_ENTER_SUBSCRIPTION_CREATE,
         canCreate: canCreateSubscription(state),
+        publishedWeeklyMenus: selectPublishedWeeklyMenus(state),
       };
 
     case ACTION_MEAL_LIST:
