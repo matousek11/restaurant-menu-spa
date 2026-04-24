@@ -13,11 +13,12 @@ import {createParagraph} from '../ui-components/paragraph.js';
 export function weeklyMenuListView(weeklyMenus, dispatch) {
   const root = document.createElement('div');
   root.appendChild(createHeader('Týdenní menu', 'h2'));
-  const weeklyMenuCreateButton = createButton(
-    'Nové týdenní menu',
-    () => window.location.hash = '#/create-weekly-menu',
-  )
-  root.appendChild(weeklyMenuCreateButton);
+  root.appendChild(
+    createButton('Nové týdenní menu', () => window.location.hash = '#/create-weekly-menu'),
+  );
+  root.appendChild(
+    createButton('Správa jídel', () => window.location.hash = '#/meals'),
+  );
 
   if (!weeklyMenus?.length) {
     root.appendChild(createParagraph('Žádná týdenní menu.'));

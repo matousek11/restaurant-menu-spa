@@ -23,4 +23,6 @@ export async function makeMealCreateAction({store, api, payload}) {
       status: constants.LOADED,
     },
   }));
+
+  window.location.hash = '#/meals';
 }

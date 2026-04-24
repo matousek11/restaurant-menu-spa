@@ -61,7 +61,7 @@ function buildEditForm(meal, dispatch) {
   submit.textContent = 'Uložit změny';
   form.appendChild(submit);
 
-  form.onsubmit = updateMealFormHandler(dispatch, meal.id);
+  form.onsubmit = updateMealFormHandler(dispatch, meal);
 
   return form;
 }

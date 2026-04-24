@@ -9,6 +9,9 @@ export function mealListView(meals, dispatch) {
   const root = document.createElement('div');
   root.appendChild(createHeader('Jídla', 'h2'));
   root.appendChild(
+    createButton('← Zpět na týdenní menu', () => (window.location.hash = '#/weekly-menu')),
+  );
+  root.appendChild(
     createButton('Nové jídlo', () => (window.location.hash = '#/create-meal')),
   );
 

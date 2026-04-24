@@ -34,6 +34,12 @@ export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeBu
         );
         adminButton.id = 'nav-admin-btn';
         navBar.appendChild(adminButton);
+
+        const mealsButton = createButton(
+          'Správa jídel', () => window.location.hash = '#/meals'
+        );
+        mealsButton.id = 'nav-meals-btn';
+        navBar.appendChild(mealsButton);
     } else {
         // GUEST: show only Login button
         const loginButton = createButton(
