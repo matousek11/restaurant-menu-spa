@@ -120,7 +120,13 @@ export function render(root, state, dispatch) {
             renderedView = weeklyMenuListView(viewState.weeklyMenus, dispatch);
             break;
         case constants.ACTION_WEEKLY_MENU_DETAIL:
-            renderedView = weeklyMenuDetailView(viewState.weeklyMenu, viewState.canDisplayStateChangeButtons, viewState.canUpdateWeeklyMenu, dispatch);
+            renderedView = weeklyMenuDetailView(
+                viewState.weeklyMenu,
+                viewState.meals ?? [],
+                viewState.canDisplayStateChangeButtons,
+                viewState.canUpdateWeeklyMenu,
+                dispatch,
+            );
             break;
         case constants.ACTION_WEEKLY_MENU_CREATE:
             renderedView = weeklyMenuCreateView(viewState.weeklyMenu);

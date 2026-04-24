@@ -1,18 +1,19 @@
 import {createButton} from '../ui-components/button.js';
 import {createWeek} from '../ui-components/week.js';
-import {ACTION_ADD_MEAL_TO_MENU, ACTION_REMOVE_MEAL_FROM_MENU, MEAL_DRAFT, MEAL_AVAILABLE} from '../../../constants.js';
+import {ACTION_ADD_MEAL_TO_MENU, ACTION_REMOVE_MEAL_FROM_MENU, MEAL_AVAILABLE} from '../../../constants.js';
 
 /**
  * Renders the weekly menu detail view with meal management controls.
  * Manager can add/remove meals for each day.
  *
  * @param {Object} weeklyMenu - the weekly menu data
+ * @param {Object[]} availableMeals - meals from meal management
  * @param {Function} canDisplayStateChangeButtons - permission check for state transitions
  * @param {Function} canUpdateWeeklyMenu - permission check for editing
  * @param {Function} dispatch - the dispatcher function
  * @returns {HTMLElement}
  */
-export function weeklyMenuDetailView(weeklyMenu, canDisplayStateChangeButtons, canUpdateWeeklyMenu, dispatch) {
+export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayStateChangeButtons, canUpdateWeeklyMenu, dispatch) {
   const root = document.createElement("div");
 
   const backButton = createButton(
@@ -29,7 +30,7 @@ export function weeklyMenuDetailView(weeklyMenu, canDisplayStateChangeButtons, c
     null,
     (originalWeekStartId, updatedWeekStartId) =>
       `#/weekly-menu-date/${encodeURIComponent(originalWeekStartId)}/${encodeURIComponent(updatedWeekStartId)}`,
-    true, // skipDaysList — days are managed via the Správa jídel section below
+    true,
   );
   root.appendChild(weeklyMenuRender);
 
@@ -44,7 +45,7 @@ export function weeklyMenuDetailView(weeklyMenu, canDisplayStateChangeButtons, c
 
     // Create a meal management panel for each day (0-6)
     for (let dayId = 0; dayId < 7; dayId++) {
-      const dayPanel = createDayMealPanel(weeklyMenu, dayId, dispatch);
+      const dayPanel = createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch);
       mealSection.appendChild(dayPanel);
     }
 
@@ -59,10 +60,11 @@ export function weeklyMenuDetailView(weeklyMenu, canDisplayStateChangeButtons, c
  *
  * @param {Object} weeklyMenu - the weekly menu data
  * @param {number} dayId - the day index (0-6)
+ * @param {Object[]} availableMeals - meals from meal management
  * @param {Function} dispatch - the dispatcher function
  * @returns {HTMLElement}
  */
-function createDayMealPanel(weeklyMenu, dayId, dispatch) {
+function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
   const dayNames = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'];
   const panel = document.createElement('div');
   panel.className = 'day-meal-panel';
@@ -85,9 +87,9 @@ function createDayMealPanel(weeklyMenu, dayId, dispatch) {
 
       const nameSpan = document.createElement('span');
       if (meal.name && typeof meal.name === 'object') {
-        nameSpan.textContent = `${meal.name.cz || meal.name.en || 'Bez názvu'} — ${meal.price || 0} Kč`;
+        nameSpan.textContent = `${meal.name.cz || meal.name.en || 'Bez názvu'} - ${meal.price || 0} Kč`;
       } else {
-        nameSpan.textContent = `${meal.name || 'Bez názvu'} — ${meal.price || 0} Kč`;
+        nameSpan.textContent = `${meal.name || 'Bez názvu'} - ${meal.price || 0} Kč`;
       }
       li.appendChild(nameSpan);
 
@@ -120,6 +122,67 @@ function createDayMealPanel(weeklyMenu, dayId, dispatch) {
   const form = document.createElement('form');
   form.className = 'add-meal-form';
 
+  const managedMeals = Array.isArray(availableMeals)
+    ? availableMeals.filter((meal) => meal && meal.name && meal.status === MEAL_AVAILABLE)
+    : [];
+
+  const savedMealSelect = document.createElement('select');
+  savedMealSelect.className = 'meal-select';
+  const savedMealDefaultOption = document.createElement('option');
+  savedMealDefaultOption.value = '';
+  savedMealDefaultOption.textContent = 'Vyber jídlo ze správy jídel';
+  savedMealSelect.appendChild(savedMealDefaultOption);
+
+  for (const managedMeal of managedMeals) {
+    const option = document.createElement('option');
+    option.value = managedMeal.id;
+    option.textContent = `${managedMeal.name?.cz || managedMeal.name?.en || 'Bez názvu'} - ${managedMeal.price || 0} Kč`;
+    savedMealSelect.appendChild(option);
+  }
+  form.appendChild(savedMealSelect);
+
+  const addExistingMeal = () => {
+    const selectedMealId = savedMealSelect.value;
+    if (!selectedMealId) {
+      return;
+    }
+
+    const selectedExistingMeal = managedMeals.find((meal) => meal.id === selectedMealId);
+    if (!selectedExistingMeal) {
+      return;
+    }
+
+    const mealFromTemplate = {
+      id: crypto.randomUUID(),
+      templateId: selectedExistingMeal.id,
+      name: {
+        cz: selectedExistingMeal.name?.cz ?? selectedExistingMeal.name?.en ?? '',
+        en: selectedExistingMeal.name?.en ?? selectedExistingMeal.name?.cz ?? '',
+      },
+      price: selectedExistingMeal.price ?? 0,
+      allergens: selectedExistingMeal.allergens ?? [],
+      description: selectedExistingMeal.description ?? null,
+      status: selectedExistingMeal.status ?? MEAL_AVAILABLE,
+    };
+
+    dispatch({
+      type: ACTION_ADD_MEAL_TO_MENU,
+      payload: {
+        weekStartId: weeklyMenu.weekStartId,
+        dayId: dayId,
+        meal: mealFromTemplate,
+      },
+    });
+    savedMealSelect.value = '';
+  };
+
+  const addSavedMealButton = createButton(
+    '+ Přidat vybrané jídlo',
+    addExistingMeal,
+    'meal-add-btn',
+  );
+  form.appendChild(addSavedMealButton);
+
   const nameInput = document.createElement('input');
   nameInput.type = 'text';
   nameInput.placeholder = 'Název jídla';
@@ -134,18 +197,6 @@ function createDayMealPanel(weeklyMenu, dayId, dispatch) {
   priceInput.min = '0';
   priceInput.required = true;
   form.appendChild(priceInput);
-
-  const stateSelect = document.createElement('select');
-  stateSelect.className = 'meal-select';
-  const optDraft = document.createElement('option');
-  optDraft.value = MEAL_DRAFT;
-  optDraft.textContent = 'Draft';
-  const optAvailable = document.createElement('option');
-  optAvailable.value = MEAL_AVAILABLE;
-  optAvailable.textContent = 'Available';
-  stateSelect.appendChild(optDraft);
-  stateSelect.appendChild(optAvailable);
-  form.appendChild(stateSelect);
 
   const addBtn = document.createElement('button');
   addBtn.type = 'submit';
@@ -166,7 +217,7 @@ function createDayMealPanel(weeklyMenu, dayId, dispatch) {
       name: { cz: mealName, en: mealName },
       price: mealPrice,
       allergens: [],
-      status: stateSelect.value,
+      status: MEAL_AVAILABLE,
     };
 
     dispatch({
