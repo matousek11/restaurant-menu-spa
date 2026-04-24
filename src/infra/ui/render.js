@@ -5,6 +5,9 @@ import {weeklyMenuListView} from './view/weeklyMenuListView.js';
 import {weeklyMenuDetailView} from './view/weeklyMenuDetailView.js';
 import {weeklyMenuCreateView} from './view/weeklyMenuCreateView.js';
 import {renderLoginForm} from './view/authView.js';
+import {mealListView} from './view/mealListView.js';
+import {mealCreateView} from './view/mealCreateView.js';
+import {mealDetailView} from './view/mealDetailView.js';
 import {AUTH_ROLE_MANAGER} from '../../app/auth/authTransitions.js';
 import {ACTION_AUTH_LOGOUT} from '../../app/actions/authLogoutAction.js';
 
@@ -93,6 +96,15 @@ export function render(root, state, dispatch) {
             break;
         case constants.ACTION_WEEKLY_MENU_CREATE:
             renderedView = weeklyMenuCreateView(viewState.weeklyMenu);
+            break;
+        case constants.ACTION_MEAL_LIST:
+            renderedView = mealListView(viewState.meals, dispatch);
+            break;
+        case constants.ACTION_MEAL_CREATE:
+            renderedView = mealCreateView(viewState.meal, dispatch);
+            break;
+        case constants.ACTION_MEAL_DETAIL:
+            renderedView = mealDetailView(viewState.meal, dispatch);
             break;
         default:
             break;

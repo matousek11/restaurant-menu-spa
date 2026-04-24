@@ -8,9 +8,13 @@ import {
   ACTION_WEEKLY_MENU_DETAIL,
   ACTION_WEEKLY_MENU_LIST,
   ACTION_WEEKLY_MENU_UPDATE_STATE,
+  ACTION_MEAL_LIST,
+  ACTION_MEAL_CREATE,
+  ACTION_MEAL_DETAIL,
   ERROR,
   LOADED,
   LOADING,
+  MEAL_DRAFT,
   VIEW_LOGIN,
   WEEKLY_MENU_DRAFT,
   WEEKLY_MENU_PUBLISHED,
@@ -189,6 +193,18 @@ function selectManagerView(state) {
         canResume: canResumeSubscription(state),
         canCancel: canCancelSubscription(state),
       };
+
+    case ACTION_MEAL_LIST:
+      return { meals: state.meals };
+
+    case ACTION_MEAL_CREATE:
+      return {
+        meal: { status: MEAL_DRAFT, name: { cz: '', en: '' }, price: 0, allergens: [], description: null },
+      };
+
+    case ACTION_MEAL_DETAIL:
+      return { meal: state.meals.find((m) => m.id === state.ui.selectedMealId) ?? null };
+
     default:
       return {
         type: 'ERROR',

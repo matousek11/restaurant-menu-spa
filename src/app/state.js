@@ -23,6 +23,7 @@ export function createInitialState() {
       mode: constants.MODE_SUBSCRIPTION_LIST, // TODO: je tohle potřeba? Nestačí view klíč?
       selectedWeekStartId: null,
       selectedSubscriptionId: null,
+      selectedMealId: null,
       language: constants.LANG_ENGLISH,
       status: constants.LOADING,
       errorMessage: null,
