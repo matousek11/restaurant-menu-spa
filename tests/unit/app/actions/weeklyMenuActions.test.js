@@ -98,10 +98,13 @@ describe('Weekly menu actions (view/navigation only)', () => {
   });
 
   it('sets error when opening current week view and no weekly menu exists', async () => {
-    const {store, api} = createWeeklyMenuTestSetup();
+    const initialWeeklyMenus = getWeeklyMenus().map((menu, index) => ({
+      ...menu,
+      weekStartId: index === 0 ? '2099-01-05' : '2099-01-12',
+    }));
+    const {store, api} = createWeeklyMenuTestSetup(initialWeeklyMenus);
     const t = store.getTranslator();
-    const weeklyMenuId = getMondayDateOfCurrentWeek();
-    const payload = {weekStartId: weeklyMenuId};
+    const payload = {weekStartId: getMondayDateOfCurrentWeek()};
 
     await currentWeeklyMenuAction({store, api, payload});
 
