@@ -30,14 +30,25 @@ export function subscriptionCreateView(viewState, dispatch) {
     return root;
   }
 
+  const publishedMenus = viewState.publishedWeeklyMenus ?? [];
+  if (publishedMenus.length === 0) {
+    root.appendChild(createParagraph('Nelze vytvořit: žádné publikované týdenní menu není k dispozici.'));
+    return root;
+  }
+
   const form = document.createElement('form');
 
   const weekLabel = document.createElement('label');
-  weekLabel.textContent = 'Pondělí týdne (YYYY-MM-DD): ';
-  const weekInput = document.createElement('input');
-  weekInput.type = 'date';
-  weekInput.required = true;
-  weekLabel.appendChild(weekInput);
+  weekLabel.textContent = 'Týden: ';
+  const weekSelect = document.createElement('select');
+  weekSelect.required = true;
+  for (const menu of publishedMenus) {
+    const option = document.createElement('option');
+    option.value = menu.weekStartId;
+    option.textContent = `Týden od ${menu.weekStartId}`;
+    weekSelect.appendChild(option);
+  }
+  weekLabel.appendChild(weekSelect);
   form.appendChild(weekLabel);
 
   const daysLabel = document.createElement('label');
@@ -57,7 +68,7 @@ export function subscriptionCreateView(viewState, dispatch) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const weekStartId = weekInput.value;
+    const weekStartId = weekSelect.value;
     const totalDays = parseInt(daysInput.value, 10);
     if (!weekStartId || Number.isNaN(totalDays)) return;
     dispatch({
