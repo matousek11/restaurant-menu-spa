@@ -9,7 +9,7 @@ import {makeWeeklyMenuEditAction} from '../../../../src/app/actions/makeWeeklyMe
 import {makeWeeklyMenuDeleteAction} from '../../../../src/app/actions/makeWeeklyMenuDeleteAction';
 
 const newWeeklyMenu = {
-  weekStartId: '2026-02-23',
+  weekStartId: '2099-01-05',
   state: constants.WEEKLY_MENU_DRAFT,
   days: [
     {
