@@ -11,6 +11,8 @@ import {makeMealCreateAction} from '../../../../src/app/actions/makeMealCreateAc
 import {makeMealPublishAction} from '../../../../src/app/actions/makeMealPublishAction.js';
 import {makeMealUnavailableAction} from '../../../../src/app/actions/makeMealUnavailableAction.js';
 import {makeMealAvailableAction} from '../../../../src/app/actions/makeMealAvailableAction.js';
+import {makeMealUpdateAction} from '../../../../src/app/actions/makeMealUpdateAction.js';
+import {mealDetailAction} from '../../../../src/app/actions/mealDetailAction.js';
 
 function createTestSetup(meals = getMeals()) {
   const store = createStore(createInitialState());
@@ -119,6 +121,49 @@ describe('makeMealUnavailableAction', () => {
 
     const stateAfter = store.getState();
     expect(stateAfter.meals).toEqual(stateBefore.meals);
+  });
+});
+
+describe('mealDetailAction', () => {
+  it('navigates to the meal detail view and sets selectedMealId', () => {
+    const {store, meals} = createTestSetup();
+    const meal = meals[0];
+
+    mealDetailAction({store, payload: {mealId: meal.id}});
+
+    const state = store.getState();
+    expect(state.ui.view).toBe(constants.ACTION_MEAL_DETAIL);
+    expect(state.ui.selectedMealId).toBe(meal.id);
+    expect(state.ui.status).toBe(constants.LOADED);
+    expect(state.ui.errorMessage).toBeNull();
+  });
+});
+
+describe('makeMealUpdateAction', () => {
+  it('updates meal data in the store and preserves status', async () => {
+    const {store, api, meals} = createTestSetup();
+    const original = meals.find((m) => m.status === constants.MEAL_AVAILABLE);
+    const updated = {...original, name: {cz: 'Nový název', en: 'New name'}, price: 200};
+
+    await makeMealUpdateAction({store, api, payload: {meal: updated}});
+
+    const state = store.getState();
+    const result = state.meals.find((m) => m.id === original.id);
+    expect(result.name.cz).toBe('Nový název');
+    expect(result.price).toBe(200);
+    expect(result.status).toBe(constants.MEAL_AVAILABLE);
+    expect(state.ui.status).toBe(constants.LOADED);
+  });
+
+  it('sets error when meal does not exist', async () => {
+    const {store, api} = createTestSetup();
+    const nonexistent = {id: 'nonexistent-id', name: {cz: 'X', en: 'X'}, price: 0, allergens: [], status: constants.MEAL_DRAFT};
+
+    await makeMealUpdateAction({store, api, payload: {meal: nonexistent}});
+
+    const state = store.getState();
+    expect(state.ui.errorMessage).toBe('Meal not found.');
+    expect(state.ui.status).toBe(constants.LOADED);
   });
 });
 

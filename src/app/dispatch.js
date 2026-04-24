@@ -10,6 +10,7 @@ import {makeWeeklyMenuDeleteAction} from './actions/makeWeeklyMenuDeleteAction.j
 import {getMondayDateOfCurrentWeek} from './helpers/dateManipulation.js';
 import {mealListAction} from './actions/mealListAction.js';
 import {mealCreateAction} from './actions/mealCreateAction.js';
+import {mealDetailAction} from './actions/mealDetailAction.js';
 import {makeMealCreateAction} from './actions/makeMealCreateAction.js';
 import {makeMealPublishAction} from './actions/makeMealPublishAction.js';
 import {makeMealUnavailableAction} from './actions/makeMealUnavailableAction.js';
@@ -74,6 +75,8 @@ export function createDispatcher(store, api) {
         return mealListAction({store});
       case constants.ACTION_MEAL_CREATE:
         return mealCreateAction({store});
+      case constants.ACTION_MEAL_DETAIL:
+        return mealDetailAction({store, payload: action.payload});
       case constants.ACTION_MAKE_MEAL_CREATE:
         return makeMealCreateAction({store, api, payload: action.payload});
       case constants.ACTION_MAKE_MEAL_PUBLISH:

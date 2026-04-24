@@ -1,3 +1,10 @@
+// Mock window.location for Node.js test environment
+global.window = {
+  location: {
+    hash: '',
+  },
+};
+
 // Mock localStorage for Node.js test environment
 // (window.localStorage is not available in jsdom-less vitest runs)
 const localStorageStore = {};

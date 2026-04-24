@@ -23,6 +23,12 @@ import {
   VIEW_WEEKLY_MENU_CREATE_SAVE,
   VIEW_WEEKLY_MENU_UPDATE_DATE,
   VIEW_WEEKLY_MENU_LIST,
+  ACTION_MEAL_LIST,
+  ACTION_MEAL_CREATE,
+  ACTION_MEAL_DETAIL,
+  VIEW_MEAL_LIST,
+  VIEW_MEAL_CREATE,
+  VIEW_MEAL_DETAIL,
 } from '../../constants.js';
 
 // --------------------------------------------------
@@ -99,6 +105,21 @@ export function parsePath(path) {
     return { route: VIEW_LOGIN };
   }
 
+  // /meals
+  if (parts.length === 1 && parts[0] === 'meals') {
+    return { route: VIEW_MEAL_LIST };
+  }
+
+  // /create-meal
+  if (parts.length === 1 && parts[0] === 'create-meal') {
+    return { route: VIEW_MEAL_CREATE };
+  }
+
+  // /meals/:id
+  if (parts.length === 2 && parts[0] === 'meals') {
+    return { route: VIEW_MEAL_DETAIL, mealId: parts[1] };
+  }
+
   return { route: 'UNKNOWN' };
 }
 
@@ -161,6 +182,15 @@ export function routeToAction(parsed) {
 
     case VIEW_LOGIN:
       return { type: ACTION_SET_VIEW, payload: { view: VIEW_LOGIN } };
+
+    case VIEW_MEAL_LIST:
+      return { type: ACTION_MEAL_LIST };
+
+    case VIEW_MEAL_CREATE:
+      return { type: ACTION_MEAL_CREATE };
+
+    case VIEW_MEAL_DETAIL:
+      return { type: ACTION_MEAL_DETAIL, payload: { mealId: parsed.mealId } };
 
     default:
       return { type: 'ROUTE_NOT_FOUND' };

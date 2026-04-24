@@ -22,6 +22,7 @@ export function createInitialState() {
       view: constants.ACTION_CURRENT_WEEKLY_MENU,
       selectedWeekStartId: null,
       selectedSubscriptionId: null,
+      selectedMealId: null,
       language: constants.LANG_ENGLISH,
       status: constants.LOADING,
       errorMessage: null,

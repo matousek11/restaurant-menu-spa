@@ -61,15 +61,15 @@ export function toggleMealAvailabilityHandler(dispatch, meal) {
  * Returns an onSubmit handler for the "edit meal" form.
  *
  * @param {Function} dispatch
- * @param {string} mealId
+ * @param {{ id: string, status: string }} meal
  * @returns {(event: SubmitEvent) => void}
  */
-export function updateMealFormHandler(dispatch, mealId) {
+export function updateMealFormHandler(dispatch, meal) {
   return function onSubmit(event) {
     event.preventDefault();
     const form = event.target;
-    const meal = {
-      id: mealId,
+    const updated = {
+      ...meal,
       name: {
         cz: form.elements['name_cz'].value,
         en: form.elements['name_en'].value,
@@ -78,7 +78,7 @@ export function updateMealFormHandler(dispatch, mealId) {
       allergens: parseAllergensField(form.elements['allergens']?.value),
       description: form.elements['description']?.value || null,
     };
-    dispatch({type: constants.ACTION_MAKE_MEAL_UPDATE, payload: {meal}});
+    dispatch({type: constants.ACTION_MAKE_MEAL_UPDATE, payload: {meal: updated}});
   };
 }
 
