@@ -18,10 +18,11 @@ export async function authLoginAction({ store, api, payload }) {
     if (response.status === 200) {
       store.setState((state) => ({
         ...state,
-        auth: loginSuccess(state.auth, response.token),
+        auth: loginSuccess(state.auth, response.token, response.role, response.userId),
+        currentUser: { userId: response.userId },
         ui: {
           ...state.ui,
-          view: constants.ACTION_WEEKLY_MENU_LIST,
+          view: constants.ACTION_CURRENT_WEEKLY_MENU,
         }
       }));
     } else {

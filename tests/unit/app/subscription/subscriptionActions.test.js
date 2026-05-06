@@ -30,6 +30,7 @@ const seedSubscription = {
 
 function createTestSetup(seed = []) {
   const store = createStore(createInitialState());
+  store.setState((s) => ({ ...s, currentUser: { userId: 'user-1' } }));
   const api = { subscription: getSubscriptionApi(seed, true) };
   return { store, api };
 }
