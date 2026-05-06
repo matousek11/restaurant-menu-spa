@@ -12,7 +12,7 @@ export function createInitialState() {
     subscriptions: [],
 
     // identity
-    currentUser: { userId: 'user-1' },
+    currentUser: { userId: localStorage.getItem('authUserId') ?? null },
 
     // authorization – restored from localStorage if a token exists
     auth: createInitialAuthState(),

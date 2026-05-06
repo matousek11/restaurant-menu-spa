@@ -11,7 +11,7 @@ import {renderLoginForm} from './view/authView.js';
 import {mealListView} from './view/mealListView.js';
 import {mealCreateView} from './view/mealCreateView.js';
 import {mealDetailView} from './view/mealDetailView.js';
-import {AUTH_ROLE_MANAGER} from '../../app/auth/authTransitions.js';
+import {AUTH_ROLE_MANAGER, AUTH_ROLE_USER} from '../../app/auth/authTransitions.js';
 import {ACTION_AUTH_LOGOUT} from '../../app/actions/authLogoutAction.js';
 
 /**
@@ -41,6 +41,21 @@ function createUserStatusHeader(authState, dispatch) {
 
     if (authState.role === AUTH_ROLE_MANAGER) {
         statusText.textContent = `Manager: ${authState.token ? authState.token.replace('mock-jwt-token-', '') : 'admin'}`;
+
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.className = 'user-status-btn';
+        logoutBtn.id = 'header-logout-btn';
+        logoutBtn.onclick = (e) => {
+            e.preventDefault();
+            dispatch({ type: ACTION_AUTH_LOGOUT });
+        };
+
+        header.appendChild(statusText);
+        header.appendChild(subscriptionsBtn);
+        header.appendChild(logoutBtn);
+    } else if (authState.role === AUTH_ROLE_USER) {
+        statusText.textContent = 'Uživatel';
 
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';

@@ -1,6 +1,6 @@
 import {createButton} from '../ui-components/button.js';
 import {createWeek} from '../ui-components/week.js';
-import {AUTH_ROLE_MANAGER} from '../../../app/auth/authTransitions.js';
+import {AUTH_ROLE_MANAGER, AUTH_ROLE_USER} from '../../../app/auth/authTransitions.js';
 import {ACTION_AUTH_LOGOUT} from '../../../app/actions/authLogoutAction.js';
 
 /**
@@ -40,6 +40,20 @@ export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeBu
         );
         mealsButton.id = 'nav-meals-btn';
         navBar.appendChild(mealsButton);
+    } else if (authState.role === AUTH_ROLE_USER) {
+        // USER: show Logout + link to subscriptions
+        const logoutButton = createButton(
+          'Logout', () => dispatch({ type: ACTION_AUTH_LOGOUT })
+        );
+        logoutButton.id = 'nav-logout-btn';
+        logoutButton.className = 'auth-btn auth-btn-logout';
+        navBar.appendChild(logoutButton);
+
+        const subscriptionsButton = createButton(
+          'Moje předplatná', () => window.location.hash = '#/subscriptions'
+        );
+        subscriptionsButton.id = 'nav-subscriptions-btn';
+        navBar.appendChild(subscriptionsButton);
     } else {
         // GUEST: show only Login button
         const loginButton = createButton(

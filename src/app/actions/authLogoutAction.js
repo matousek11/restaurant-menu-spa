@@ -7,6 +7,7 @@ export async function authLogoutAction({ store, api }) {
   const doLogout = (state) => ({
     ...state,
     auth: logout(state.auth),
+    currentUser: { userId: null },
     ui: {
       ...state.ui,
       view: constants.ACTION_CURRENT_WEEKLY_MENU,

@@ -1,4 +1,4 @@
-import { loginRequest, loginSuccess, loginFailure } from '../auth/authTransitions.js';
+import { loginRequest, loginSuccess, loginFailure, AUTH_ROLE_USER } from '../auth/authTransitions.js';
 import * as constants from '../../constants.js';
 
 export const ACTION_AUTH_LOGIN = 'ACTION_AUTH_LOGIN';
@@ -18,10 +18,13 @@ export async function authLoginAction({ store, api, payload }) {
     if (response.status === 200) {
       store.setState((state) => ({
         ...state,
-        auth: loginSuccess(state.auth, response.token),
+        auth: loginSuccess(state.auth, response.token, response.role, response.userId),
+        currentUser: { userId: response.userId },
         ui: {
           ...state.ui,
-          view: constants.ACTION_WEEKLY_MENU_LIST,
+          view: response.role === AUTH_ROLE_USER
+            ? constants.ACTION_CURRENT_WEEKLY_MENU
+            : constants.ACTION_WEEKLY_MENU_LIST,
         }
       }));
     } else {

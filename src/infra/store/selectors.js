@@ -33,6 +33,11 @@ export function selectSubscriptions(state) {
   return state.subscriptions ?? [];
 }
 
+export function selectUserSubscriptions(state) {
+  const userId = state.currentUser.userId;
+  return state.subscriptions.filter((s) => s.userId === userId);
+}
+
 export function selectSubscriptionById(state) {
   const id = state.ui.selectedSubscriptionId;
   if (!id) return null;
@@ -170,27 +175,6 @@ function selectManagerView(state) {
     case VIEW_LOGIN:
       return { type: VIEW_LOGIN };
 
-    case ACTION_ENTER_SUBSCRIPTIONS:
-      return {
-        type: ACTION_ENTER_SUBSCRIPTIONS,
-        subscriptions: selectSubscriptions(state),
-        canCreate: canCreateSubscription(state),
-      };
-    case ACTION_ENTER_SUBSCRIPTION_DETAIL:
-      return {
-        type: ACTION_ENTER_SUBSCRIPTION_DETAIL,
-        subscription: selectSubscriptionById(state),
-        canPause: canPauseSubscription(state),
-        canResume: canResumeSubscription(state),
-        canCancel: canCancelSubscription(state),
-      };
-    case ACTION_ENTER_SUBSCRIPTION_CREATE:
-      return {
-        type: ACTION_ENTER_SUBSCRIPTION_CREATE,
-        canCreate: canCreateSubscription(state),
-        publishedWeeklyMenus: selectPublishedWeeklyMenus(state),
-      };
-
     case ACTION_MEAL_LIST:
       return { meals: state.meals };
 
@@ -205,6 +189,52 @@ function selectManagerView(state) {
       return {
         type: 'ERROR',
         message: `Manager role — neznámý view: ${state.ui.view}`,
+      };
+  }
+}
+
+function selectUserView(state) {
+  console.log('[selectUserView] view ->', state.ui.view);
+  switch (state.ui.view) {
+    case ACTION_CURRENT_WEEKLY_MENU:
+      const currentWeekId = getMondayDateOfCurrentWeek();
+      return {
+        weeklyMenu: state.weeklyMenus.find(
+          menu => menu.weekStartId === currentWeekId && menu.state === WEEKLY_MENU_PUBLISHED
+        ),
+        canDisplayStateChangeButtons: (_, __) => false,
+      };
+
+    case ACTION_ENTER_SUBSCRIPTIONS:
+      return {
+        type: ACTION_ENTER_SUBSCRIPTIONS,
+        subscriptions: selectUserSubscriptions(state),
+        canCreate: canCreateSubscription(state),
+      };
+
+    case ACTION_ENTER_SUBSCRIPTION_DETAIL:
+      return {
+        type: ACTION_ENTER_SUBSCRIPTION_DETAIL,
+        subscription: selectSubscriptionById(state),
+        canPause: canPauseSubscription(state),
+        canResume: canResumeSubscription(state),
+        canCancel: canCancelSubscription(state),
+      };
+
+    case ACTION_ENTER_SUBSCRIPTION_CREATE:
+      return {
+        type: ACTION_ENTER_SUBSCRIPTION_CREATE,
+        canCreate: canCreateSubscription(state),
+        publishedWeeklyMenus: selectPublishedWeeklyMenus(state),
+      };
+
+    case VIEW_LOGIN:
+      return { type: VIEW_LOGIN };
+
+    default:
+      return {
+        type: 'ERROR',
+        message: `User role — neznámý view: ${state.ui.view}`,
       };
   }
 }
@@ -230,6 +260,9 @@ export function selectViewState(state) {
 
         case 'MANAGER':
           return selectManagerView(state);
+
+        case 'USER':
+          return selectUserView(state);
 
         default:
           return {
