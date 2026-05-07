@@ -8,6 +8,7 @@ import {
   ACTION_ENTER_SUBSCRIPTION_CREATE,
   ACTION_ENTER_SUBSCRIPTION_DETAIL,
   ACTION_WEEKLY_MENU_CREATE,
+  ACTION_WEEKLY_MENU_ARCHIVED_LIST,
   ACTION_WEEKLY_MENU_DETAIL,
   ACTION_WEEKLY_MENU_LIST,
   ACTION_WEEKLY_MENU_UPDATE_STATE,
@@ -21,6 +22,7 @@ import {
   MEAL_AVAILABLE,
   MEAL_UNAVAILABLE,
   VIEW_LOGIN,
+  WEEKLY_MENU_ARCHIVED,
   WEEKLY_MENU_DRAFT,
   WEEKLY_MENU_PUBLISHED,
 } from '../../constants.js';
@@ -67,6 +69,10 @@ export function selectPublishedWeeklyMenus(state) {
 
 export function selectAllWeeklyMenus(state) {
   return state.weeklyMenus ?? [];
+}
+
+export function selectArchivedWeeklyMenus(state) {
+  return selectAllWeeklyMenus(state).filter((m) => m.state === WEEKLY_MENU_ARCHIVED);
 }
 
 export function selectWeeklyMenuByWeekStartId(state) {
@@ -213,6 +219,11 @@ function selectManagerView(state) {
     case ACTION_WEEKLY_MENU_LIST:
       return {
         weeklyMenus: selectAllWeeklyMenus(state),
+      }
+
+    case ACTION_WEEKLY_MENU_ARCHIVED_LIST:
+      return {
+        weeklyMenus: selectArchivedWeeklyMenus(state),
       }
 
     case ACTION_WEEKLY_MENU_CREATE:

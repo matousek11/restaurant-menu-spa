@@ -7,6 +7,12 @@ export function goToWeeklyMenuListHandler() {
   };
 }
 
+export function goToArchivedWeeklyMenuListHandler() {
+  return function onClick() {
+    window.location.hash = '#/weekly-menu/archived';
+  };
+}
+
 export function goToWeeklyMenuCreateHandler() {
   return function onClick() {
     window.location.hash = '#/create-weekly-menu';
