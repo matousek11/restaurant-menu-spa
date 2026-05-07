@@ -4,6 +4,11 @@ import { createParagraph } from './paragraph.js';
 import { createButton } from './button.js';
 import { getMondayDateOfWeek } from '../../../app/helpers/dateManipulation.js';
 import {
+    createWeeklyMenuDateChangeHandler,
+    createWeeklyMenuSaveHandler,
+    createWeeklyMenuStateChangeHandler,
+} from '../../handlers/weeklyMenuHandlers.js';
+import {
     WEEKLY_MENU_ARCHIVED,
     WEEKLY_MENU_DRAFT,
     WEEKLY_MENU_PUBLISHED,
@@ -42,24 +47,36 @@ export function createWeek(
     }
 
     if (allowMoveToDraft) {
-        weekElement.appendChild(createButton('Put to draft', () => {
-            window.location.hash = `#/weekly-menu-state/${week.weekStartId}/${WEEKLY_MENU_DRAFT}`
-        }));
+        weekElement.appendChild(
+            createButton(
+                'Put to draft',
+                createWeeklyMenuStateChangeHandler(week.weekStartId, WEEKLY_MENU_DRAFT),
+            ),
+        );
     }
     if (allowMoveToReady) {
-        weekElement.appendChild(createButton('Put to ready', () => {
-            window.location.hash = `#/weekly-menu-state/${week.weekStartId}/${WEEKLY_MENU_READY}`
-        }));
+        weekElement.appendChild(
+            createButton(
+                'Put to ready',
+                createWeeklyMenuStateChangeHandler(week.weekStartId, WEEKLY_MENU_READY),
+            ),
+        );
     }
     if (allowMoveToPublished) {
-        weekElement.appendChild(createButton('Publish', () => {
-            window.location.hash = `#/weekly-menu-state/${week.weekStartId}/${WEEKLY_MENU_PUBLISHED}`
-        }));
+        weekElement.appendChild(
+            createButton(
+                'Publish',
+                createWeeklyMenuStateChangeHandler(week.weekStartId, WEEKLY_MENU_PUBLISHED),
+            ),
+        );
     }
     if (allowMoveToArchived) {
-        weekElement.appendChild(createButton('Archive', () => {
-            window.location.hash = `#/weekly-menu-state/${week.weekStartId}/${WEEKLY_MENU_ARCHIVED}`
-        }));
+        weekElement.appendChild(
+            createButton(
+                'Archive',
+                createWeeklyMenuStateChangeHandler(week.weekStartId, WEEKLY_MENU_ARCHIVED),
+            ),
+        );
     }
 
     weekElement.appendChild(createHeader(week.weekStartId));
@@ -83,18 +100,14 @@ export function createWeek(
             dateInput.value = getMondayDateOfWeek(week.weekStartId);
         }
         if (buildDateChangeRoute !== null) {
-            dateInput.addEventListener('change', (event) => {
-                const updatedWeekStartId = event.target.value;
-                if (!updatedWeekStartId) {
-                    return;
-                }
-                const normalizedWeekStartId = getMondayDateOfWeek(updatedWeekStartId);
-                dateInput.value = normalizedWeekStartId;
-                window.location.hash = buildDateChangeRoute(
+            dateInput.addEventListener(
+                'change',
+                createWeeklyMenuDateChangeHandler(
                     week.weekStartId,
-                    normalizedWeekStartId,
-                );
-            });
+                    buildDateChangeRoute,
+                    dateInput,
+                ),
+            );
         }
 
         dateLabel.appendChild(dateInput);
@@ -103,16 +116,10 @@ export function createWeek(
 
         if (buildSaveRoute !== null) {
             weekElement.appendChild(
-                createButton('Uložit změnu', () => {
-                    const currentDateValue = getMondayDateOfWeek(
-                        dateInput.value || week.weekStartId,
-                    );
-                    dateInput.value = currentDateValue;
-                    window.location.hash = buildSaveRoute(
-                        week.weekStartId,
-                        currentDateValue,
-                    );
-                }),
+                createButton(
+                    'Uložit změnu',
+                    createWeeklyMenuSaveHandler(week.weekStartId, buildSaveRoute, dateInput),
+                ),
             );
         }
     }

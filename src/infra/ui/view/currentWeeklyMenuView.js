@@ -2,6 +2,7 @@ import {createButton} from '../ui-components/button.js';
 import {createWeek} from '../ui-components/week.js';
 import {AUTH_ROLE_MANAGER, AUTH_ROLE_USER} from '../../../app/auth/authTransitions.js';
 import {ACTION_AUTH_LOGOUT} from '../../../app/actions/authLogoutAction.js';
+import {goToWeeklyMenuListHandler} from '../../handlers/weeklyMenuHandlers.js';
 
 /**
  * Renders the current weekly menu view.
@@ -30,7 +31,7 @@ export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeBu
         navBar.appendChild(logoutButton);
 
         const adminButton = createButton(
-          'Admin Panel', () => window.location.hash = '#/weekly-menu'
+          'Admin Panel', goToWeeklyMenuListHandler(),
         );
         adminButton.id = 'nav-admin-btn';
         navBar.appendChild(adminButton);
