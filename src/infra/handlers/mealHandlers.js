@@ -1,12 +1,5 @@
 import * as constants from '../../constants.js';
 
-/**
- * Returns an onSubmit handler for the "create meal" form.
- * Reads name (cz/en), price, allergens from the form and dispatches ACTION_MAKE_MEAL_CREATE.
- *
- * @param {Function} dispatch
- * @returns {(event: SubmitEvent) => void}
- */
 export function createMealFormHandler(dispatch) {
   return function onSubmit(event) {
     event.preventDefault();
@@ -25,13 +18,6 @@ export function createMealFormHandler(dispatch) {
   };
 }
 
-/**
- * Returns an onClick handler that publishes a meal (DRAFT -> AVAILABLE).
- *
- * @param {Function} dispatch
- * @param {string} mealId
- * @returns {(event: MouseEvent) => void}
- */
 export function publishMealHandler(dispatch, mealId) {
   return function onClick(event) {
     event.preventDefault();
@@ -39,13 +25,6 @@ export function publishMealHandler(dispatch, mealId) {
   };
 }
 
-/**
- * Returns an onClick handler that toggles meal availability (AVAILABLE <-> UNAVAILABLE).
- *
- * @param {Function} dispatch
- * @param {{ id: string, status: string }} meal
- * @returns {(event: MouseEvent) => void}
- */
 export function toggleMealAvailabilityHandler(dispatch, meal) {
   return function onClick(event) {
     event.preventDefault();
@@ -57,13 +36,6 @@ export function toggleMealAvailabilityHandler(dispatch, meal) {
   };
 }
 
-/**
- * Returns an onSubmit handler for the "edit meal" form.
- *
- * @param {Function} dispatch
- * @param {{ id: string, status: string }} meal
- * @returns {(event: SubmitEvent) => void}
- */
 export function updateMealFormHandler(dispatch, meal) {
   return function onSubmit(event) {
     event.preventDefault();
@@ -82,13 +54,6 @@ export function updateMealFormHandler(dispatch, meal) {
   };
 }
 
-/**
- * Parses a comma-separated string of allergen numbers into an array of integers.
- * Returns an empty array for empty/undefined input.
- *
- * @param {string | undefined} value
- * @returns {number[]}
- */
 function parseAllergensField(value) {
   if (!value) return [];
   return value

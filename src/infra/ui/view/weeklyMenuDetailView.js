@@ -1,6 +1,11 @@
 import {createButton} from '../ui-components/button.js';
 import {createWeek} from '../ui-components/week.js';
-import {ACTION_ADD_MEAL_TO_MENU, ACTION_REMOVE_MEAL_FROM_MENU, MEAL_AVAILABLE} from '../../../constants.js';
+import {MEAL_AVAILABLE} from '../../../constants.js';
+import {
+  removeMealFromMenuHandler,
+  addMealFromTemplateHandler,
+  addNewMealToMenuFormHandler,
+} from '../../handlers/weeklyMenuHandlers.js';
 
 /**
  * Renders the weekly menu detail view with meal management controls.
@@ -96,16 +101,7 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
       const removeBtn = document.createElement('button');
       removeBtn.textContent = '✕ Odebrat';
       removeBtn.className = 'meal-remove-btn';
-      removeBtn.onclick = () => {
-        dispatch({
-          type: ACTION_REMOVE_MEAL_FROM_MENU,
-          payload: {
-            weekStartId: weeklyMenu.weekStartId,
-            dayId: dayId,
-            mealId: meal.id,
-          }
-        });
-      };
+      removeBtn.onclick = removeMealFromMenuHandler(dispatch, weeklyMenu.weekStartId, dayId, meal.id);
       li.appendChild(removeBtn);
 
       mealList.appendChild(li);
@@ -141,38 +137,10 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
   }
   form.appendChild(savedMealSelect);
 
+  const addFromTemplate = addMealFromTemplateHandler(dispatch, weeklyMenu, dayId, managedMeals);
   const addExistingMeal = () => {
-    const selectedMealId = savedMealSelect.value;
-    if (!selectedMealId) {
-      return;
-    }
-
-    const selectedExistingMeal = managedMeals.find((meal) => meal.id === selectedMealId);
-    if (!selectedExistingMeal) {
-      return;
-    }
-
-    const mealFromTemplate = {
-      id: crypto.randomUUID(),
-      templateId: selectedExistingMeal.id,
-      name: {
-        cz: selectedExistingMeal.name?.cz ?? selectedExistingMeal.name?.en ?? '',
-        en: selectedExistingMeal.name?.en ?? selectedExistingMeal.name?.cz ?? '',
-      },
-      price: selectedExistingMeal.price ?? 0,
-      allergens: selectedExistingMeal.allergens ?? [],
-      description: selectedExistingMeal.description ?? null,
-      status: selectedExistingMeal.status ?? MEAL_AVAILABLE,
-    };
-
-    dispatch({
-      type: ACTION_ADD_MEAL_TO_MENU,
-      payload: {
-        weekStartId: weeklyMenu.weekStartId,
-        dayId: dayId,
-        meal: mealFromTemplate,
-      },
-    });
+    if (!savedMealSelect.value) return;
+    addFromTemplate(savedMealSelect.value);
     savedMealSelect.value = '';
   };
 
@@ -185,6 +153,7 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
 
   const nameInput = document.createElement('input');
   nameInput.type = 'text';
+  nameInput.name = 'mealName';
   nameInput.placeholder = 'Název jídla';
   nameInput.className = 'meal-input';
   nameInput.required = true;
@@ -192,6 +161,7 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
 
   const priceInput = document.createElement('input');
   priceInput.type = 'number';
+  priceInput.name = 'mealPrice';
   priceInput.placeholder = 'Cena (Kč)';
   priceInput.className = 'meal-input';
   priceInput.min = '0';
@@ -204,31 +174,7 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
   addBtn.className = 'meal-add-btn';
   form.appendChild(addBtn);
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const mealName = nameInput.value.trim();
-    const mealPrice = parseInt(priceInput.value, 10);
-
-    if (!mealName || isNaN(mealPrice)) return;
-
-    const meal = {
-      id: crypto.randomUUID(),
-      templateId: null,
-      name: { cz: mealName, en: mealName },
-      price: mealPrice,
-      allergens: [],
-      status: MEAL_AVAILABLE,
-    };
-
-    dispatch({
-      type: ACTION_ADD_MEAL_TO_MENU,
-      payload: {
-        weekStartId: weeklyMenu.weekStartId,
-        dayId: dayId,
-        meal: meal,
-      }
-    });
-  });
+  form.onsubmit = addNewMealToMenuFormHandler(dispatch, weeklyMenu, dayId);
 
   panel.appendChild(form);
 
