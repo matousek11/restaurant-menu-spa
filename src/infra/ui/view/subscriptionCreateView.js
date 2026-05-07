@@ -1,7 +1,7 @@
 import { createButton } from '../ui-components/button.js';
 import { createHeader } from '../ui-components/header.js';
 import { createParagraph } from '../ui-components/paragraph.js';
-import { ACTION_CREATE_SUBSCRIPTION } from '../../../constants.js';
+import { createSubscriptionFormHandler } from '../../handlers/subscriptionHandlers.js';
 
 /**
  * Formulář pro vytvoření nového předplatného.
@@ -66,16 +66,7 @@ export function subscriptionCreateView(viewState, dispatch) {
   submit.textContent = 'Vytvořit';
   form.appendChild(submit);
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const weekStartId = weekSelect.value;
-    const totalDays = parseInt(daysInput.value, 10);
-    if (!weekStartId || Number.isNaN(totalDays)) return;
-    dispatch({
-      type: ACTION_CREATE_SUBSCRIPTION,
-      payload: { weekStartId, totalDays },
-    });
-  });
+  form.addEventListener('submit', createSubscriptionFormHandler(dispatch, weekSelect, daysInput));
 
   root.appendChild(form);
   return root;

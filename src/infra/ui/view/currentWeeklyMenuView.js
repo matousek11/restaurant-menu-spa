@@ -66,7 +66,7 @@ export function currentWeeklyMenuView(currentWeeklyMenu, canDisplayStateChangeBu
 
     root.appendChild(navBar);
 
-    const weeklyMenu = createWeek(currentWeeklyMenu, canDisplayStateChangeButtons);
+    const weeklyMenu = createWeek(currentWeeklyMenu ?? undefined, canDisplayStateChangeButtons);
     root.appendChild(weeklyMenu);
 
     return root;
