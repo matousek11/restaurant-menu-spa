@@ -2,10 +2,10 @@ import { createButton } from '../ui-components/button.js';
 import { createHeader } from '../ui-components/header.js';
 import { createParagraph } from '../ui-components/paragraph.js';
 import {
-  ACTION_CANCEL_SUBSCRIPTION,
-  ACTION_PAUSE_SUBSCRIPTION,
-  ACTION_RESUME_SUBSCRIPTION,
-} from '../../../constants.js';
+  pauseSubscriptionHandler,
+  resumeSubscriptionHandler,
+  cancelSubscriptionHandler,
+} from '../../handlers/subscriptionHandlers.js';
 
 /**
  * Detail konkrétního předplatného + akce (pause / resume / cancel).
@@ -40,34 +40,19 @@ export function subscriptionDetailView(viewState, dispatch) {
 
   if (viewState.canPause) {
     actions.appendChild(
-      createButton('Pozastavit', () =>
-        dispatch({
-          type: ACTION_PAUSE_SUBSCRIPTION,
-          payload: { subscriptionId: s.id },
-        }),
-      ),
+      createButton('Pozastavit', pauseSubscriptionHandler(dispatch, s.id)),
     );
   }
 
   if (viewState.canResume) {
     actions.appendChild(
-      createButton('Obnovit', () =>
-        dispatch({
-          type: ACTION_RESUME_SUBSCRIPTION,
-          payload: { subscriptionId: s.id },
-        }),
-      ),
+      createButton('Obnovit', resumeSubscriptionHandler(dispatch, s.id)),
     );
   }
 
   if (viewState.canCancel) {
     actions.appendChild(
-      createButton('Zrušit', () =>
-        dispatch({
-          type: ACTION_CANCEL_SUBSCRIPTION,
-          payload: { subscriptionId: s.id },
-        }),
-      ),
+      createButton('Zrušit', cancelSubscriptionHandler(dispatch, s.id)),
     );
   }
 
