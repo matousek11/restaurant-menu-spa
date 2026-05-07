@@ -18,6 +18,8 @@ import {
   LOADED,
   LOADING,
   MEAL_DRAFT,
+  MEAL_AVAILABLE,
+  MEAL_UNAVAILABLE,
   VIEW_LOGIN,
   WEEKLY_MENU_DRAFT,
   WEEKLY_MENU_PUBLISHED,
@@ -60,7 +62,72 @@ export function selectPublishedWeeklyMenus(state) {
 }
 
 // ==================
-// Odvozené hodnoty pro UI
+// WeeklyMenu selektory
+// ==================
+
+export function selectAllWeeklyMenus(state) {
+  return state.weeklyMenus ?? [];
+}
+
+export function selectWeeklyMenuByWeekStartId(state) {
+  return selectAllWeeklyMenus(state).find(
+    (m) => m.weekStartId === state.ui.selectedWeekStartId
+  ) ?? null;
+}
+
+export function selectCurrentWeeklyMenu(state) {
+  const currentWeekId = getMondayDateOfCurrentWeek();
+  return selectAllWeeklyMenus(state).find(
+    (m) => m.weekStartId === currentWeekId
+  ) ?? null;
+}
+
+export function selectCurrentPublishedWeeklyMenu(state) {
+  const currentWeekId = getMondayDateOfCurrentWeek();
+  return selectAllWeeklyMenus(state).find(
+    (m) => m.weekStartId === currentWeekId && m.state === WEEKLY_MENU_PUBLISHED
+  ) ?? null;
+}
+
+// ==================
+// Meal selektory
+// ==================
+
+export function selectAllMeals(state) {
+  return state.meals ?? [];
+}
+
+export function selectMealById(state) {
+  return selectAllMeals(state).find((m) => m.id === state.ui.selectedMealId) ?? null;
+}
+
+// ==================
+// Odvozené hodnoty pro UI — Meal
+// ==================
+
+export function canPublishMeal(state) {
+  if (state.ui.status !== LOADED) return false;
+  const meal = selectMealById(state);
+  if (!meal) return false;
+  return meal.status === MEAL_DRAFT;
+}
+
+export function canMarkUnavailableMeal(state) {
+  if (state.ui.status !== LOADED) return false;
+  const meal = selectMealById(state);
+  if (!meal) return false;
+  return meal.status === MEAL_AVAILABLE;
+}
+
+export function canMarkAvailableMeal(state) {
+  if (state.ui.status !== LOADED) return false;
+  const meal = selectMealById(state);
+  if (!meal) return false;
+  return meal.status === MEAL_UNAVAILABLE;
+}
+
+// ==================
+// Odvozené hodnoty pro UI — Subscription
 // ==================
 
 export function canCreateSubscription(state) {
@@ -101,11 +168,8 @@ function selectGuestView(state) {
   console.log('[selectGuestView] view ->', state.ui.view);
   switch (state.ui.view) {
     case ACTION_CURRENT_WEEKLY_MENU:
-      const currentWeekId = getMondayDateOfCurrentWeek();
       return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === currentWeekId && menu.state === WEEKLY_MENU_PUBLISHED
-        ),
+        weeklyMenu: selectCurrentPublishedWeeklyMenu(state),
         canDisplayStateChangeButtons: (_, __) => false,
       }
 
@@ -127,35 +191,28 @@ function selectManagerView(state) {
   console.log('[selectManagerView] view ->', state.ui.view);
   switch (state.ui.view) {
     case ACTION_CURRENT_WEEKLY_MENU:
-      const currentWeekId = getMondayDateOfCurrentWeek();
       return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === currentWeekId
-        ),
+        weeklyMenu: selectCurrentWeeklyMenu(state),
         canDisplayStateChangeButtons: canDisplayStateChangeButtons,
         canUpdateWeeklyMenu: canUpdateWeeklyMenu,
       }
 
     case ACTION_WEEKLY_MENU_DETAIL:
       return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === state.ui.selectedWeekStartId
-        ),
-        meals: state.meals,
+        weeklyMenu: selectWeeklyMenuByWeekStartId(state),
+        meals: selectAllMeals(state),
         canDisplayStateChangeButtons: canDisplayStateChangeButtons,
         canUpdateWeeklyMenu: canUpdateWeeklyMenu,
       }
 
     case ACTION_WEEKLY_MENU_UPDATE_STATE:
       return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === state.ui.selectedWeekStartId
-        )
+        weeklyMenu: selectWeeklyMenuByWeekStartId(state),
       }
 
     case ACTION_WEEKLY_MENU_LIST:
       return {
-        weeklyMenus: state.weeklyMenus,
+        weeklyMenus: selectAllWeeklyMenus(state),
       }
 
     case ACTION_WEEKLY_MENU_CREATE:
@@ -176,7 +233,7 @@ function selectManagerView(state) {
       return { type: VIEW_LOGIN };
 
     case ACTION_MEAL_LIST:
-      return { meals: state.meals };
+      return { meals: selectAllMeals(state) };
 
     case ACTION_MEAL_CREATE:
       return {
@@ -184,7 +241,13 @@ function selectManagerView(state) {
       };
 
     case ACTION_MEAL_DETAIL:
-      return { meal: state.meals.find((m) => m.id === state.ui.selectedMealId) ?? null };
+      return {
+        meal: selectMealById(state),
+        canPublish: canPublishMeal(state),
+        canMarkUnavailable: canMarkUnavailableMeal(state),
+        canMarkAvailable: canMarkAvailableMeal(state),
+      };
+
     default:
       return {
         type: 'ERROR',
@@ -197,11 +260,8 @@ function selectUserView(state) {
   console.log('[selectUserView] view ->', state.ui.view);
   switch (state.ui.view) {
     case ACTION_CURRENT_WEEKLY_MENU:
-      const currentWeekId = getMondayDateOfCurrentWeek();
       return {
-        weeklyMenu: state.weeklyMenus.find(
-          menu => menu.weekStartId === currentWeekId && menu.state === WEEKLY_MENU_PUBLISHED
-        ),
+        weeklyMenu: selectCurrentPublishedWeeklyMenu(state),
         canDisplayStateChangeButtons: (_, __) => false,
       };
 
