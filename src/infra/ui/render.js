@@ -134,6 +134,9 @@ export function render(root, state, dispatch) {
         case constants.ACTION_WEEKLY_MENU_LIST:
             renderedView = weeklyMenuListView(viewState.weeklyMenus, dispatch);
             break;
+        case constants.ACTION_WEEKLY_MENU_ARCHIVED_LIST:
+            renderedView = weeklyMenuListView(viewState.weeklyMenus, dispatch, true);
+            break;
         case constants.ACTION_WEEKLY_MENU_DETAIL:
             renderedView = weeklyMenuDetailView(
                 viewState.weeklyMenu,

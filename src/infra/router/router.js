@@ -9,6 +9,7 @@ import {
   ACTION_MAKE_WEEKLY_MENU_DELETE,
   ACTION_SET_VIEW,
   ACTION_WEEKLY_MENU_CREATE,
+  ACTION_WEEKLY_MENU_ARCHIVED_LIST,
   ACTION_WEEKLY_MENU_DETAIL,
   ACTION_WEEKLY_MENU_LIST,
   ACTION_WEEKLY_MENU_UPDATE_DATE,
@@ -18,6 +19,7 @@ import {
   VIEW_DELETE_WEEKLY_MENU,
   VIEW_DETAIL_WEEKLY_MENU,
   VIEW_LOGIN,
+  VIEW_WEEKLY_MENU_ARCHIVED_LIST,
   VIEW_WEEKLY_MENU_CHANGE_STATE,
   VIEW_WEEKLY_MENU_CREATE,
   VIEW_WEEKLY_MENU_CREATE_SAVE,
@@ -52,6 +54,10 @@ export function parsePath(path) {
   // / (empty path when the application is loaded)
   if (parts.length === 0) {
     return { route: VIEW_CURRENT_WEEKLY_MENU };
+  }
+
+  if (parts.length === 2 && parts[0] === 'weekly-menu' && parts[1] === 'archived') {
+    return { route: VIEW_WEEKLY_MENU_ARCHIVED_LIST };
   }
 
   if (parts.length === 2 && parts[0] === 'weekly-menu' && parts[1] !== undefined) {
@@ -164,6 +170,9 @@ export function routeToAction(parsed) {
 
     case VIEW_WEEKLY_MENU_LIST:
       return {type: ACTION_WEEKLY_MENU_LIST};
+
+    case VIEW_WEEKLY_MENU_ARCHIVED_LIST:
+      return {type: ACTION_WEEKLY_MENU_ARCHIVED_LIST};
 
     case VIEW_DELETE_WEEKLY_MENU:
       return {type: ACTION_MAKE_WEEKLY_MENU_DELETE, payload: {weekStartId: parsed.weeklyMenuId}};

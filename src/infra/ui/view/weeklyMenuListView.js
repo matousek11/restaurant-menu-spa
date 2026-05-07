@@ -1,27 +1,43 @@
 import {createButton} from '../ui-components/button.js';
 import {createHeader} from '../ui-components/header.js';
 import {createParagraph} from '../ui-components/paragraph.js';
+import {
+  goToArchivedWeeklyMenuListHandler,
+  goToWeeklyMenuListHandler,
+  goToWeeklyMenuCreateHandler,
+  goToWeeklyMenuDeleteHandler,
+  goToWeeklyMenuDetailHandler,
+} from '../../handlers/weeklyMenuHandlers.js';
 
 /**
  * List of all weekly menus
  *
  * @param {Array<{ weekStartId: string, state?: string }>} weeklyMenus
  * @param {(action: { type: string, payload?: object }) => void} dispatch
+ * @param {boolean} isArchivedList whether to show archived weekly menus only
  *
  * @returns {HTMLDivElement}
  */
-export function weeklyMenuListView(weeklyMenus, dispatch) {
+export function weeklyMenuListView(weeklyMenus, dispatch, isArchivedList = false) {
   const root = document.createElement('div');
-  root.appendChild(createHeader('Týdenní menu', 'h2'));
-  root.appendChild(
-    createButton('Nové týdenní menu', () => window.location.hash = '#/create-weekly-menu'),
-  );
-  root.appendChild(
-    createButton('Správa jídel', () => window.location.hash = '#/meals'),
-  );
+  root.appendChild(createHeader(isArchivedList ? 'Archivovaná týdenní menu' : 'Týdenní menu', 'h2'));
+
+  if (isArchivedList) {
+    root.appendChild(createButton('Všechna menu', goToWeeklyMenuListHandler()));
+  } else {
+    root.appendChild(createButton('Archivovaná menu', goToArchivedWeeklyMenuListHandler()));
+    root.appendChild(
+      createButton('Nové týdenní menu', goToWeeklyMenuCreateHandler()),
+    );
+    root.appendChild(
+      createButton('Správa jídel', () => window.location.hash = '#/meals'),
+    );
+  }
 
   if (!weeklyMenus?.length) {
-    root.appendChild(createParagraph('Žádná týdenní menu.'));
+    root.appendChild(
+      createParagraph(isArchivedList ? 'Žádná archivovaná týdenní menu.' : 'Žádná týdenní menu.'),
+    );
     return root;
   }
 
@@ -44,14 +60,10 @@ export function weeklyMenuListView(weeklyMenus, dispatch) {
     const weekStartId = menu.weekStartId;
 
     actions.appendChild(
-      createButton('Zobrazit', () =>
-        window.location.hash = `#/weekly-menu/${encodeURIComponent(weekStartId)}`
-      ),
+      createButton('Zobrazit', goToWeeklyMenuDetailHandler(weekStartId)),
     );
     actions.appendChild(
-      createButton('Smazat', () =>
-        window.location.hash = `#/delete-weekly-menu/${encodeURIComponent(weekStartId)}`
-      ),
+      createButton('Smazat', goToWeeklyMenuDeleteHandler(weekStartId)),
     );
 
     item.appendChild(info);

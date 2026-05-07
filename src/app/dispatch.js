@@ -30,6 +30,7 @@ import {authLoginAction} from './actions/authLoginAction.js';
 import {authLogoutAction} from './actions/authLogoutAction.js';
 import {addMealToMenuAction} from './actions/addMealToMenuAction.js';
 import {removeMealFromMenuAction} from './actions/removeMealFromMenuAction.js';
+import {weeklyMenuArchivedListAction} from './actions/weeklyMenuArchivedListAction.js';
 
 /**
  *
@@ -52,6 +53,8 @@ export function createDispatcher(store, api) {
         return weeklyMenuUpdateDateAction({store, api, payload: action.payload});
       case constants.ACTION_WEEKLY_MENU_LIST:
         return weeklyMenuListAction({store});
+      case constants.ACTION_WEEKLY_MENU_ARCHIVED_LIST:
+        return weeklyMenuArchivedListAction({store});
       case constants.ACTION_WEEKLY_MENU_DETAIL:
         return weeklyMenuDetailAction({store, api, payload: action.payload});
       case constants.ACTION_CURRENT_WEEKLY_MENU:

@@ -5,6 +5,7 @@ import {
   removeMealFromMenuHandler,
   addMealFromTemplateHandler,
   addNewMealToMenuFormHandler,
+  goToWeeklyMenuListHandler,
 } from '../../handlers/weeklyMenuHandlers.js';
 
 /**
@@ -21,9 +22,7 @@ import {
 export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayStateChangeButtons, canUpdateWeeklyMenu, dispatch) {
   const root = document.createElement("div");
 
-  const backButton = createButton(
-    '← Zpět na seznam', () => window.location.hash = '#/weekly-menu'
-  );
+  const backButton = createButton('Zpět na seznam', goToWeeklyMenuListHandler());
   backButton.className = 'auth-btn auth-btn-home';
   root.appendChild(backButton);
 
@@ -39,8 +38,8 @@ export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayState
   );
   root.appendChild(weeklyMenuRender);
 
-  // --- Meal Management Section (only if menu exists and is editable) ---
-  if (weeklyMenu && canUpdateWeeklyMenu && canUpdateWeeklyMenu(weeklyMenu.state)) {
+  // Meal management section
+  if (weeklyMenu) {
     const mealSection = document.createElement('div');
     mealSection.className = 'meal-management-section';
 
@@ -50,7 +49,13 @@ export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayState
 
     // Create a meal management panel for each day (0-6)
     for (let dayId = 0; dayId < 7; dayId++) {
-      const dayPanel = createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch);
+      const dayPanel = createDayMealPanel(
+        weeklyMenu,
+        dayId,
+        availableMeals,
+        dispatch,
+        canUpdateWeeklyMenu(weeklyMenu.state),
+      );
       mealSection.appendChild(dayPanel);
     }
 
@@ -67,9 +72,11 @@ export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayState
  * @param {number} dayId - the day index (0-6)
  * @param {Object[]} availableMeals - meals from meal management
  * @param {Function} dispatch - the dispatcher function
+ * @param {boolean} isEditable - whether the menu can be edited
+ *
  * @returns {HTMLElement}
  */
-function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
+function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch, isEditable) {
   const dayNames = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'];
   const panel = document.createElement('div');
   panel.className = 'day-meal-panel';
@@ -98,11 +105,13 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
       }
       li.appendChild(nameSpan);
 
-      const removeBtn = document.createElement('button');
-      removeBtn.textContent = '✕ Odebrat';
-      removeBtn.className = 'meal-remove-btn';
-      removeBtn.onclick = removeMealFromMenuHandler(dispatch, weeklyMenu.weekStartId, dayId, meal.id);
-      li.appendChild(removeBtn);
+      if (isEditable) {
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Odebrat';
+        removeBtn.className = 'meal-remove-btn';
+        removeBtn.onclick = removeMealFromMenuHandler(dispatch, weeklyMenu.weekStartId, dayId, meal.id);
+        li.appendChild(removeBtn);
+      }
 
       mealList.appendChild(li);
     }
@@ -112,6 +121,10 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
     noMeals.className = 'day-no-meals';
     noMeals.textContent = 'Žádná jídla';
     panel.appendChild(noMeals);
+  }
+
+  if (!isEditable) {
+    return panel;
   }
 
   // --- Add Meal Form ---
@@ -139,7 +152,10 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
 
   const addFromTemplate = addMealFromTemplateHandler(dispatch, weeklyMenu, dayId, managedMeals);
   const addExistingMeal = () => {
-    if (!savedMealSelect.value) return;
+    if (!savedMealSelect.value) {
+      return;
+    }
+
     addFromTemplate(savedMealSelect.value);
     savedMealSelect.value = '';
   };
