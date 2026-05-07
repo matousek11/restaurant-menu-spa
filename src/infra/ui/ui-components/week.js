@@ -12,7 +12,6 @@ import {
     WEEKLY_MENU_ARCHIVED,
     WEEKLY_MENU_DRAFT,
     WEEKLY_MENU_PUBLISHED,
-    WEEKLY_MENU_READY,
 } from '../../../constants.js';
 
 /**
@@ -38,11 +37,10 @@ export function createWeek(
     }
 
     const allowMoveToDraft = canDisplayStateChangeButtons(week.state, WEEKLY_MENU_DRAFT);
-    const allowMoveToReady = canDisplayStateChangeButtons(week.state, WEEKLY_MENU_READY);
     const allowMoveToPublished = canDisplayStateChangeButtons(week.state, WEEKLY_MENU_PUBLISHED);
     const allowMoveToArchived = canDisplayStateChangeButtons(week.state, WEEKLY_MENU_ARCHIVED);
 
-    if (allowMoveToDraft || allowMoveToReady || allowMoveToPublished || allowMoveToArchived) {
+    if (allowMoveToDraft || allowMoveToPublished || allowMoveToArchived) {
         weekElement.appendChild(createParagraph('Přepnutí stavu:'));
     }
 
@@ -54,14 +52,7 @@ export function createWeek(
             ),
         );
     }
-    if (allowMoveToReady) {
-        weekElement.appendChild(
-            createButton(
-                'Put to ready',
-                createWeeklyMenuStateChangeHandler(week.weekStartId, WEEKLY_MENU_READY),
-            ),
-        );
-    }
+
     if (allowMoveToPublished) {
         weekElement.appendChild(
             createButton(
@@ -70,6 +61,7 @@ export function createWeek(
             ),
         );
     }
+
     if (allowMoveToArchived) {
         weekElement.appendChild(
             createButton(
