@@ -1,6 +1,11 @@
 import {createButton} from '../ui-components/button.js';
 import {createHeader} from '../ui-components/header.js';
 import {createParagraph} from '../ui-components/paragraph.js';
+import {
+  goToWeeklyMenuCreateHandler,
+  goToWeeklyMenuDeleteHandler,
+  goToWeeklyMenuDetailHandler,
+} from '../../handlers/weeklyMenuHandlers.js';
 
 /**
  * List of all weekly menus
@@ -14,7 +19,7 @@ export function weeklyMenuListView(weeklyMenus, dispatch) {
   const root = document.createElement('div');
   root.appendChild(createHeader('Týdenní menu', 'h2'));
   root.appendChild(
-    createButton('Nové týdenní menu', () => window.location.hash = '#/create-weekly-menu'),
+    createButton('Nové týdenní menu', goToWeeklyMenuCreateHandler()),
   );
   root.appendChild(
     createButton('Správa jídel', () => window.location.hash = '#/meals'),
@@ -44,14 +49,10 @@ export function weeklyMenuListView(weeklyMenus, dispatch) {
     const weekStartId = menu.weekStartId;
 
     actions.appendChild(
-      createButton('Zobrazit', () =>
-        window.location.hash = `#/weekly-menu/${encodeURIComponent(weekStartId)}`
-      ),
+      createButton('Zobrazit', goToWeeklyMenuDetailHandler(weekStartId)),
     );
     actions.appendChild(
-      createButton('Smazat', () =>
-        window.location.hash = `#/delete-weekly-menu/${encodeURIComponent(weekStartId)}`
-      ),
+      createButton('Smazat', goToWeeklyMenuDeleteHandler(weekStartId)),
     );
 
     item.appendChild(info);

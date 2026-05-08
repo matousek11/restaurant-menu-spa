@@ -5,6 +5,7 @@ import {
   removeMealFromMenuHandler,
   addMealFromTemplateHandler,
   addNewMealToMenuFormHandler,
+  goToWeeklyMenuListHandler,
 } from '../../handlers/weeklyMenuHandlers.js';
 
 /**
@@ -21,9 +22,7 @@ import {
 export function weeklyMenuDetailView(weeklyMenu, availableMeals, canDisplayStateChangeButtons, canUpdateWeeklyMenu, dispatch) {
   const root = document.createElement("div");
 
-  const backButton = createButton(
-    '← Zpět na seznam', () => window.location.hash = '#/weekly-menu'
-  );
+  const backButton = createButton('Zpět na seznam', goToWeeklyMenuListHandler());
   backButton.className = 'auth-btn auth-btn-home';
   root.appendChild(backButton);
 
@@ -139,7 +138,10 @@ function createDayMealPanel(weeklyMenu, dayId, availableMeals, dispatch) {
 
   const addFromTemplate = addMealFromTemplateHandler(dispatch, weeklyMenu, dayId, managedMeals);
   const addExistingMeal = () => {
-    if (!savedMealSelect.value) return;
+    if (!savedMealSelect.value) {
+      return;
+    }
+
     addFromTemplate(savedMealSelect.value);
     savedMealSelect.value = '';
   };
