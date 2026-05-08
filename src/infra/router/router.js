@@ -33,17 +33,6 @@ import {
   VIEW_MEAL_DETAIL,
 } from '../../constants.js';
 
-// --------------------------------------------------
-// Router pracuje s LOGICKOU CESTOU aplikace,
-// nikoli s celou URL (protokol, host, port ho nezajímají).
-//
-// Podporované cesty:
-//
-//   #/subscriptions
-//   #/subscriptions/create
-//   #/subscriptions/:id
-// --------------------------------------------------
-
 /**
  * Rozebere logickou cestu aplikace na významovou strukturu.
  * @param {string} path – např. "subscriptions/sub-1"
@@ -129,9 +118,6 @@ export function parsePath(path) {
   return { route: 'UNKNOWN' };
 }
 
-/**
- * Převádí rozpoznanou trasu na aplikační akci.
- */
 export function routeToAction(parsed) {
   console.log('[router] routeToAction ->', parsed.route);
   switch (parsed.route) {
@@ -206,10 +192,6 @@ export function routeToAction(parsed) {
   }
 }
 
-/**
- * Adaptér mezi prohlížečem a routerem.
- * Jediné místo, kde saháme na window.location.
- */
 export function urlToAction() {
   const hash = window.location.hash; // např. "#/subscriptions/sub-1"
   const path = hash.startsWith('#/') ? hash.slice(2) : '';
